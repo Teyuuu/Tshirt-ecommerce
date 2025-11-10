@@ -11,13 +11,6 @@
         }
 
         /* Navigation */
-.logo img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;             /* makes the image circular */
-    object-fit: cover;              /* fills the circle */
-    vertical-align: middle;         /* aligns with the text baseline */
-}
 
         nav {
             position: fixed;
@@ -48,7 +41,15 @@
             font-family: serif;
             gap: 10px; /* space between logo and text */
             display: inline-flex;           /* keeps image and text on same line */
-    align-items: center;            /* vertically centers both */
+            align-items: center;            /* vertically centers both */
+        }
+
+        .logo img {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;             /* makes the image circular */
+        object-fit: cover;              /* fills the circle */
+        vertical-align: middle;         /* aligns with the text baseline */
         }
 
         .nav-links {
