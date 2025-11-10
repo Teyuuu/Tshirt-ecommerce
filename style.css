@@ -12,9 +12,11 @@
 
         /* Navigation */
 .logo img {
-    width: 40px;  /* adjust size as needed */
-    height: 40px;
-    object-fit: contain;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;             /* makes the image circular */
+    object-fit: cover;              /* fills the circle */
+    vertical-align: middle;         /* aligns with the text baseline */
 }
 
         nav {
@@ -43,6 +45,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-family: serif;
+            gap: 10px; /* space between logo and text */
+            display: inline-flex;           /* keeps image and text on same line */
+    align-items: center;            /* vertically centers both */
         }
 
         .nav-links {
