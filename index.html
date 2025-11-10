@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas & Cotton - Click and wear.</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+    <div class="nav-container">
+        <div class="logo">
+            <img src="images/logo.png" alt="Canvas & Cotton Logo">
+            <span>Canvas & Cotton</span>
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#designer">Designer</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+            <a href="#designer" class="cta-btn">Start Designing</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Create Your Perfect T-Shirt</h1>
+            <p>Design custom t-shirts with our easy-to-use editor. Premium quality printing, fast delivery, and unlimited creativity at your fingertips.</p>
+            <div class="hero-buttons">
+                <a href="#designer" class="btn btn-primary">Start Designing Now</a>
+                <a href="#pricing" class="btn btn-secondary">View Pricing</a>
+            </div>
+        </div>
+        <div class="tshirt-preview-container">
+            <div class="tshirt-mockup">
+                <svg class="tshirt-base" viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="shadow">
+                            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.2"/>
+                        </filter>
+                    </defs>
+                    <path d="M60,60 L60,30 Q60,15 75,15 L120,15 Q127.5,15 135,22.5 Q142.5,30 150,30 Q157.5,30 165,22.5 Q172.5,15 180,15 L225,15 Q240,15 240,30 L240,60 L270,90 L270,120 L255,120 L255,360 L45,360 L45,120 L30,120 L30,90 Z" 
+                          fill="white" 
+                          stroke="#e0e0e0" 
+                          stroke-width="2"
+                          filter="url(#shadow)"/>
+                </svg>
+                <div class="design-overlay">
+                    <div class="design-text-hero">Your Design Here</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose Canvas & Cotton?</h2>
+            <p class="section-subtitle">Everything you need for perfect custom t-shirts</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Easy Designer</h3>
+                    <p>Intuitive editor with real-time preview. Add text, upload images, and customize colors instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast Production</h3>
+                    <p>Your custom t-shirts printed and shipped within 2-3 business days with premium quality.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Premium Quality</h3>
+                    <p>100% cotton shirts with vibrant, long-lasting prints using state-of-the-art printing technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Bulk Discounts</h3>
+                    <p>Order more, save more. Special pricing for teams, events, and businesses of all sizes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Free Shipping</h3>
+                    <p>Free delivery on orders over $50. Track your order every step of the way.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Satisfaction Guaranteed</h3>
+                    <p>30-day money-back guarantee. If you're not happy, we'll make it right.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Designer Section -->
+    <section class="designer-section" id="designer">
+        <div class="designer-container">
+            <h2 class="section-title">Design Your T-Shirt</h2>
+            <p class="section-subtitle">Create something unique in minutes</p>
+            
+            <div class="designer-grid">
+                <!-- Preview Area -->
+                <div class="preview-area">
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="switchView('front')">Front View</button>
+                        <button class="view-btn" onclick="switchView('back')">Back View</button>
+                    </div>
+
+                    <div class="tshirt-canvas-container">
+                        <!-- Front View -->
+                        <div class="tshirt-view" id="front-view">
+                        <img src="tshirt-back.png" id="tshirt-base-front" class="tshirt-base" alt="Front T-Shirt">
+                        <div class="canvas-overlay" id="front-overlay">
+                            <div class="canvas-design-text" id="front-text">Your Design</div>
+                        </div>
+                        </div>
+
+                        <!-- Back View -->
+                        <div class="tshirt-view" id="back-view" style="display: none;">
+                        <img src="tshirt-back.png" id="tshirt-base-back" class="tshirt-base" alt="Back T-Shirt">
+                        <div class="canvas-overlay" id="back-overlay">
+                            <div class="canvas-design-text" id="back-text">Back Design</div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <h3 style="margin-bottom: 20px;">Design Controls</h3>
+
+                    <div class="control-group">
+                        <label>T-Shirt Color</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="tshirt-color" value="#FFFFFF" onchange="updateTshirtColor()">
+                            <div class="color-preview" id="tshirt-color-preview">#FFFFFF</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Design Type</label>
+                        <select id="design-type" onchange="updateDesignType()">
+                            <option value="text">Text Design</option>
+                            <option value="image">Image Upload</option>
+                        </select>
+                    </div>
+
+                    <div id="text-controls">
+                        <div class="control-group">
+                            <label>Your Text</label>
+                            <textarea id="design-text" placeholder="Enter your text..." oninput="updateText()">Your Design</textarea>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Text Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" id="text-color" value="#000000" onchange="updateTextColor()">
+                                <div class="color-preview" id="text-color-preview">#000000</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Font Size</label>
+                            <input type="range" id="font-size" min="16" max="64" value="32" oninput="updateFontSize()" style="width: 100%;">
+                            <div style="text-align: center; margin-top: 5px; font-weight: 600;"><span id="font-size-value">32</span>px</div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Font Family</label>
+                            <select id="font-family" onchange="updateFontFamily()">
+                                <option value="Arial, sans-serif">Arial</option>
+                                <option value="'Courier New', monospace">Courier New</option>
+                                <option value="Georgia, serif">Georgia</option>
+                                <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                                <option value="Impact, fantasy">Impact</option>
+                                <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                                <option value="Verdana, sans-serif">Verdana</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="image-controls" style="display: none;">
+                        <div class="control-group">
+                            <label>Upload Image</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload()">
+                                <label for="image-upload" class="file-input-label">📁 Choose Image File</label>
+                            </div>
+                            <p style="font-size: 12px; color: #666; margin-top: 10px;">Recommended: PNG or JPG, max 5MB</p>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn-control btn-reset" onclick="resetDesign()">Reset Design</button>
+                        <button class="btn-control btn-order" onclick="orderNow()">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="pricing-container">
+            <h2 class="section-title">Simple, Transparent Pricing</h2>
+            <p class="section-subtitle">No hidden fees, just great quality at fair prices</p>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Single</h3>
+                    <div class="price">$24.99</div>
+                    <p class="price-desc">per shirt</p>
+                    <ul class="pricing-features">
+                        <li>1-4 shirts</li>
+                        <li>Premium 100% cotton</li>
+                        <li>Full color printing</li>
+                        <li>Standard shipping</li>
+                    </ul>
+                    <a href="#designer" class="btn btn-secondary">Order Now</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Bulk</h3>
+                    <div class="price">$19.99</div>
+                    <p class="price-desc">per shirt</p>
+                    <ul class="pricing-features">
+                        <li>5-24 shirts</li>
+                        <li>Premium 100% cotton</li>
+                        <li>Full color printing</li>
+                        <li>FREE shipping</li>
+                        <li>Bulk discount applied</li>
+                    </ul>
+                    <a href="#designer" class="btn btn-white">Order Now</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Wholesale</h3>
+                    <div class="price">$14.99</div>
+                    <p class="price-desc">per shirt</p>
+                    <ul class="pricing-features">
+                        <li>25+ shirts</li>
+                        <li>Premium 100% cotton</li>
+                        <li>Full color printing</li>
+                        <li>FREE express shipping</li>
+                        <li>Priority production</li>
+                        <li>Dedicated support</li>
+                    </ul>
+                    <a href="#designer" class="btn btn-secondary">Order Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Create Something Amazing?</h2>
+        <p>Join thousands of happy customers who've designed their perfect t-shirts</p>
+        <a href="#designer" class="btn btn-white">Start Designing Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Canvas & Cotton</h4>
+                <p>Premium custom t-shirt printing with fast delivery and unbeatable quality.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#process">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#designer">Designer</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Pinterest</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
