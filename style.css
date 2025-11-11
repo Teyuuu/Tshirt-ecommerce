@@ -6,7 +6,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: #1a1a1a;
+            color: #F1EFC8;
             overflow-x: hidden;
         }
 
@@ -16,7 +16,7 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background:#ffef87;
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -34,11 +34,11 @@
         .logo {
             font-size: 24px;
             font-weight: 800;
-            background:linear-gradient(135deg, #FFD700 0%, #667eea 100%);
+            background:#045490;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-family: serif;
+            font-family: Georgia, 'Times New Roman', Times, serif;
             gap: 10px; /* space between logo and text */
             display: inline-flex;           /* keeps image and text on same line */
             align-items: center;            /* vertically centers both */
@@ -60,18 +60,18 @@
 
         .nav-links a {
             text-decoration: none;
-            color: #1a1a1a;
+            color: #045490;
             font-weight: 500;
             transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: #667eea;
+            color: #045490;
         }
 
         .cta-btn {
             padding: 12px 30px;
-            background:#667eea;
+            background:#045490;
             color: white !important;
             border-radius: 25px;
             font-weight: 600;
@@ -100,7 +100,7 @@
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #FFD700 0%, #667eea 100%);
+            background: #045490;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -131,7 +131,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #FFD700 0%, #667eea 100%);
+            background: #045490;
             color: white;
         }
 
@@ -142,12 +142,12 @@
 
         .btn-secondary {
             background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            color: #045490;
+            border: 2px solid #ffef87;
         }
 
         .btn-secondary:hover {
-            background: #667eea;
+            background: #045490;
             color: white;
         }
 
