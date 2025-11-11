@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Your Shirt | Canvas & Cotton</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <a href="index.html"><img src="images/logo.png" alt="Logo"></a>
+        <span>Canvas & Cotton</span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+        <a href="designer.html" class="cta-btn">Start Designing</a>
+      </div>
+    </div>
+  </nav>
+    <!-- Designer Section -->
+    <section class="designer-section" id="designer">
+        <div class="designer-container">
+            <h2 class="section-title">Design Your T-Shirt</h2>
+            <p class="section-subtitle">Create something unique in minutes</p>
+            
+            <div class="designer-grid">
+                <!-- Preview Area -->
+                <div class="preview-area">
+                    <div class="view-toggle">
+                        <button class="view-btn active" onclick="switchView('front')">Front View</button>
+                        <button class="view-btn" onclick="switchView('back')">Back View</button>
+                    </div>
+
+                    <div class="tshirt-canvas-container">
+                        <!-- Front View -->
+                        <div class="tshirt-view" id="front-view">
+                        <img src="tshirt-front.png" id="tshirt-base-front" class="tshirt-base" alt="Front T-Shirt">
+                        <div class="canvas-overlay" id="front-overlay">
+                            <div class="canvas-design-text" id="front-text">Your Design</div>
+                        </div>
+                        </div>
+
+                        <!-- Back View -->
+                        <div class="tshirt-view" id="back-view" style="display: none;">
+                        <img src="tshirt-front.png" id="tshirt-base-back" class="tshirt-base" alt="Back T-Shirt">
+                        <div class="canvas-overlay" id="back-overlay">
+                            <div class="canvas-design-text" id="back-text">Back Design</div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <h3 style="margin-bottom: 20px;color:black;">Design Controls</h3>
+
+                    <div class="control-group">
+                        <label>T-Shirt Color</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="tshirt-color" value="#FFFFFF" onchange="updateTshirtColor()">
+                            <div class="color-preview" id="tshirt-color-preview">#FFFFFF</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Design Type</label>
+                        <select id="design-type" onchange="updateDesignType()">
+                            <option value="text">Text Design</option>
+                            <option value="image">Image Upload</option>
+                        </select>
+                    </div>
+
+                    <div id="text-controls">
+                        <div class="control-group">
+                            <label>Your Text</label>
+                            <textarea id="design-text" placeholder="Enter your text..." oninput="updateText()">Your Design</textarea>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Text Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" id="text-color" value="#000000" onchange="updateTextColor()">
+                                <div class="color-preview" id="text-color-preview">#000000</div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Font Size</label>
+                            <input type="range" id="font-size" min="16" max="64" value="32" oninput="updateFontSize()" style="width: 100%;">
+                            <div style="text-align: center; margin-top: 5px; font-weight: 600;color: black;"><span id="font-size-value">32</span>px</div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Font Family</label>
+                            <select id="font-family" onchange="updateFontFamily()">
+                                <option value="Arial, sans-serif">Arial</option>
+                                <option value="'Courier New', monospace">Courier New</option>
+                                <option value="Georgia, serif">Georgia</option>
+                                <option value="'Comic Sans MS', cursive">Comic Sans</option>
+                                <option value="Impact, fantasy">Impact</option>
+                                <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                                <option value="Verdana, sans-serif">Verdana</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="image-controls" style="display: none;">
+                        <div class="control-group">
+                            <label>Upload Image</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload()">
+                                <label for="image-upload" class="file-input-label">📁 Choose Image File</label>
+                            </div>
+                            <p style="font-size: 12px; color: #666; margin-top: 10px;">Recommended: PNG or JPG, max 5MB</p>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn-control btn-reset" onclick="resetDesign()">Reset Design</button>
+                        <button class="btn-control btn-order" onclick="orderNow()">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Canvas & Cotton</h4>
+                <p>Premium custom t-shirt printing with fast delivery and unbeatable quality.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="#process">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#designer">Designer</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
+        </div>
+    </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

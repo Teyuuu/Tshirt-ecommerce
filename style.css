@@ -206,6 +206,7 @@
             font-size: 3em;
             font-weight: 800;
             margin-bottom: 20px;
+            color: #045490;
         }
 
         .section-subtitle {
@@ -242,6 +243,7 @@
         .feature-card h3 {
             font-size: 1.5em;
             margin-bottom: 15px;
+            color: #045490;
         }
 
         .feature-card p {
@@ -382,7 +384,7 @@
         .control-group textarea:focus,
         .control-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #045490;
         }
 
         .control-group textarea {
@@ -412,6 +414,7 @@
             text-align: center;
             font-weight: 600;
             font-family: monospace;
+            color: black;
         }
 
         .file-input-wrapper {
@@ -429,7 +432,7 @@
         .file-input-label {
             display: block;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #045490;
             color: white;
             text-align: center;
             border-radius: 8px;
@@ -468,7 +471,7 @@
         }
 
         .btn-order {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #045490;
             color: white;
         }
 
@@ -510,7 +513,7 @@
         }
 
         .pricing-card.featured {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #045490;
             color: white;
             transform: scale(1.05);
         }
@@ -525,12 +528,14 @@
         .pricing-card h3 {
             font-size: 1.5em;
             margin-bottom: 20px;
+            color: #045490;
         }
 
         .price {
             font-size: 3em;
             font-weight: 800;
             margin-bottom: 10px;
+            color: #045490;
         }
 
         .price-desc {
@@ -547,6 +552,7 @@
         .pricing-features li {
             padding: 10px 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #045490;
         }
 
         .pricing-features li:before {
@@ -563,8 +569,8 @@
         /* CTA Section */
         .cta-section {
             padding: 100px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #ffef87;
+            color: #045490;
             text-align: center;
         }
 
@@ -581,7 +587,7 @@
 
         .btn-white {
             background: white;
-            color: #667eea;
+            color: #045490;
         }
 
         .btn-white:hover {
@@ -591,8 +597,8 @@
 
         /* Footer */
         footer {
-            background: #1a1a1a;
-            color: white;
+            background: #045490;
+            color: #ffef87;
             padding: 60px 40px 30px;
         }
 
@@ -670,3 +676,305 @@
                 font-size: 2em;
             }
         }
+
+/* Additional CSS for better t-shirt color functionality */
+/* Add this to your existing style.css */
+
+/* Enhanced T-shirt view containers */
+.tshirt-view {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.tshirt-base {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.3s ease, background 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+/* Better overlay positioning */
+.canvas-overlay {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Improved text design styles */
+.canvas-design-text {
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Enhanced image upload styles */
+.canvas-design-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: all 0.3s ease;
+}
+
+/* File upload button improvements */
+.file-input-label {
+    display: block;
+    padding: 15px 20px;
+    background: #045490;
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.file-input-label:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.file-input-label:active {
+    transform: translateY(0);
+}
+
+/* Color picker enhancements */
+.color-picker-group input[type="color"] {
+    width: 60px;
+    height: 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.color-picker-group input[type="color"]:hover {
+    border-color: #045490;
+    transform: scale(1.05);
+}
+
+/* Range slider enhancements */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 5px;
+    background: #045490;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #045490;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background: #045490;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #045490;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    background: #045490;
+}
+
+/* Button improvements */
+.btn-control {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-control::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-control:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-reset {
+    background: #e0e0e0;
+    color: #333;
+    border: 2px solid transparent;
+}
+
+.btn-reset:hover {
+    background: #d0d0d0;
+    border-color: #999;
+}
+
+.btn-order {
+    background: #045490;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-order:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-order:active {
+    transform: translateY(0);
+}
+
+/* Loading state for image upload */
+.file-input-label.loading {
+    background: linear-gradient(135deg, #999 0%, #666 100%);
+    cursor: wait;
+}
+
+.file-input-label.loading::after {
+    content: ' ⏳';
+}
+
+/* Smooth transitions for all controls */
+.control-group input,
+.control-group textarea,
+.control-group select {
+    transition: all 0.3s ease;
+}
+
+.control-group input:focus,
+.control-group textarea:focus,
+.control-group select:focus {
+    outline: none;
+    border-color: #045490;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* View toggle improvements */
+.view-btn {
+    padding: 12px 30px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: #666;
+    position: relative;
+}
+
+.view-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #045490;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.view-btn:hover::after {
+    width: 80%;
+}
+
+.view-btn.active {
+    background: #045490;
+    color: #ffef87;
+}
+
+.view-btn.active::after {
+    width: 0;
+}
+
+/* Scrollbar styling for controls panel */
+.controls-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+    background: #045490;
+    border-radius: 10px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb:hover {
+    background: #045490;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .designer-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .controls-panel {
+        max-height: none;
+    }
+    
+    .btn-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .canvas-overlay {
+        width: 50%;
+        height: 30%;
+    }
+}
