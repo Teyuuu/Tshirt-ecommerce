@@ -3,6 +3,9 @@
 // =====================
 let currentView = 'front';
 let uploadedImage = null;
+let originalTshirtImageFront = null;
+let originalTshirtImageBack = null;
+
 
 // =====================
 // INITIALIZATION
@@ -135,6 +138,57 @@ function handleImageUpload() {
   reader.onerror = () => alert('Error reading file. Please try again.');
   reader.readAsDataURL(file);
 }
+// =====================
+// ADVANCED IMAGE COLOR EDITING
+// =====================
+function changeImageColor(hexColor) {
+  if (!uploadedImage) {
+    alert("Upload an image first!");
+    return;
+  }
+
+  const img = new Image();
+  img.src = uploadedImage;
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    // Get all pixel data
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    // Convert hex to RGB
+    const rTarget = parseInt(hexColor.slice(1, 3), 16);
+    const gTarget = parseInt(hexColor.slice(3, 5), 16);
+    const bTarget = parseInt(hexColor.slice(5, 7), 16);
+
+    // Loop through pixels and blend color
+    for (let i = 0; i < data.length; i += 4) {
+      // Skip transparent pixels
+      if (data[i + 3] < 128) continue;
+
+      // Blend the image with selected color (weighted 50%)
+      data[i] = (data[i] * 0.5 + rTarget * 0.5);
+      data[i + 1] = (data[i + 1] * 0.5 + gTarget * 0.5);
+      data[i + 2] = (data[i + 2] * 0.5 + bTarget * 0.5);
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    const newImageURL = canvas.toDataURL();
+
+    const frontOverlay = document.getElementById("front-overlay");
+    const backOverlay = document.getElementById("back-overlay");
+    const imgHTML = `<img src="${newImageURL}" class="canvas-design-image" alt="Edited Image">`;
+
+    frontOverlay.innerHTML = imgHTML;
+    backOverlay.innerHTML = imgHTML;
+  };
+}
 
 // =====================
 // T-SHIRT COLOR CONTROL
@@ -174,28 +228,56 @@ function updateTshirtColor() {
   const color = document.getElementById('tshirt-color').value;
   const frontBase = document.getElementById('tshirt-base-front');
   const backBase = document.getElementById('tshirt-base-back');
+  const preview = document.getElementById('tshirt-color-preview');
 
-  if (color.toLowerCase() === '#ffffff') {
-    frontBase.style.filter = 'drop-shadow(0 20px 60px rgba(0,0,0,0.15))';
-    backBase.style.filter = 'drop-shadow(0 20px 60px rgba(0,0,0,0.15))';
-  } else {
-    const hsl = hexToHsl(color);
-    const filterStyle = `
-      brightness(0)
-      invert(1)
-      sepia(1)
-      saturate(5000%)
-      hue-rotate(${hsl.h}deg)
-      brightness(${(hsl.l / 100) * 2.5})
-      contrast(1.5)
-      drop-shadow(0 20px 60px rgba(0,0,0,0.15))
-    `;
-    frontBase.style.filter = filterStyle;
-    backBase.style.filter = filterStyle;
-  }
+  preview.innerText = color.toUpperCase();
 
-  document.getElementById('tshirt-color-preview').innerText = color.toUpperCase();
+  // Store originals once
+  if (!originalTshirtImageFront) originalTshirtImageFront = frontBase.src;
+  if (!originalTshirtImageBack) originalTshirtImageBack = backBase.src;
+
+  recolorTshirt(frontBase, originalTshirtImageFront, color);
+  recolorTshirt(backBase, originalTshirtImageBack, color);
 }
+
+function recolorTshirt(imgElement, originalSrc, hexColor) {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = originalSrc;
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    const rTarget = parseInt(hexColor.slice(1, 3), 16);
+    const gTarget = parseInt(hexColor.slice(3, 5), 16);
+    const bTarget = parseInt(hexColor.slice(5, 7), 16);
+
+    for (let i = 0; i < data.length; i += 4) {
+      const alpha = data[i + 3];
+      if (alpha < 80) continue;
+
+      // Convert to grayscale (removes base color)
+      const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
+      const brightness = gray / 255;
+
+      // Apply new tint while preserving shadows/highlights
+      data[i] = rTarget * brightness;
+      data[i + 1] = gTarget * brightness;
+      data[i + 2] = bTarget * brightness;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    imgElement.src = canvas.toDataURL("image/png");
+  };
+}
+
 
 // =====================
 // RESET DESIGN
