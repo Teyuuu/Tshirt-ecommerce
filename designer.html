@@ -5,6 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Design Your Shirt | Canvas & Cotton</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Save button styling */
+    .btn-save {
+      background: #4CAF50 !important;
+      color: white !important;
+    }
+
+    .btn-save:hover {
+      background: #45a049 !important;
+    }
+
+    .btn-save:disabled {
+      background: #ccc !important;
+      cursor: not-allowed !important;
+    }
+
+    .save-status {
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .save-status.show {
+      opacity: 1;
+    }
+
+    .save-status.error {
+      background: #f44336;
+    }
+
+    @media (max-width: 768px) {
+      .btn-save {
+        font-size: 14px;
+        padding: 12px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -17,20 +63,10 @@
         <a href="index.html">Home</a>
         <a href="pricing.html">Pricing</a>
         <a href="contact.html">Contact</a>
-        <a href="auth.html" class="cta-btn">Start Designing</a>
+        <a href="dashboard.html" class="cta-btn">Dashboard</a>
       </div>
     </div>
   </nav>
-
-  <!-- Top Action Buttons -->
-  <div class="top-actions">
-    <button class="btn-save" onclick="manualSaveDesign()" id="save-btn">
-      💾 Save Design
-    </button>
-    <a href="dashboard.html" class="btn-dashboard">
-      📊 Dashboard
-    </a>
-  </div>
 
   <!-- Save Status Indicator -->
   <div id="save-status" class="save-status"></div>
@@ -139,7 +175,7 @@
 
           <div class="btn-group">
             <button class="btn-control btn-reset" onclick="resetDesign()">Reset Design</button>
-            <button class="btn-control btn-order" onclick="proceedToCheckout()">Order Now</button>
+            <button class="btn-control btn-save" id="save-btn">💾 Save Design</button>
           </div>
         </div>
       </div>
@@ -157,7 +193,6 @@
         <h4>Quick Links</h4>
         <ul>
           <li><a href="index.html#features">Features</a></li>
-          <li><a href="#process">How It Works</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#designer">Designer</a></li>
         </ul>
@@ -165,9 +200,6 @@
       <div class="footer-col">
         <h4>Support</h4>
         <ul>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Shipping Info</a></li>
-          <li><a href="#">Returns</a></li>
           <li><a href="contact.html">Contact Us</a></li>
         </ul>
       </div>

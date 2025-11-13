@@ -1,18 +1,14 @@
 // =====================
 // SUPABASE CONFIGURATION
 // =====================
-const SUPABASE_URL = 'https://your-project-ref.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-key-here';
+const SUPABASE_URL = 'https://yxnrmerxfxnffjvmyoqn.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4bnJtZXJ4ZnhuZmZqdm15b3FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5OTE1MDIsImV4cCI6MjA3ODU2NzUwMn0.OtUz7bDP0T6XzCcWPTig0Ivc-cS1F8HMIvPoLVXYsXo';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // =====================
 // GLOBAL STATE
 // =====================
-let currentView = 'front';
-let uploadedImage = null;
-let originalTshirtImageFront = null;
-let originalTshirtImageBack = null;
 let currentUser = null;
 let currentDesignId = null;
 let autoSaveInterval = null;
@@ -360,4 +356,14 @@ window.addEventListener('beforeunload', () => {
     if (currentUser) {
         saveDesign();
     }
+});
+
+// Attach save button handler
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("save-btn");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", manualSaveDesign);
+  } else {
+    console.warn("Save button not found.");
+  }
 });
