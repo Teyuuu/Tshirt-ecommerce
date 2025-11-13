@@ -978,3 +978,88 @@ input[type="range"]::-moz-range-thumb:hover {
         height: 30%;
     }
 }
+
+ /* Save button styling */
+    .top-actions {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 999;
+    }
+
+    .btn-save, .btn-dashboard {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-save {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+
+    .btn-save:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .btn-dashboard {
+      background: white;
+      color: #045490;
+      border: 2px solid #045490;
+    }
+
+    .btn-dashboard:hover {
+      background: #045490;
+      color: white;
+    }
+
+    .save-status {
+      position: fixed;
+      top: 140px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .save-status.show {
+      opacity: 1;
+    }
+
+    .save-status.error {
+      background: #f44336;
+    }
+
+    @media (max-width: 768px) {
+      .top-actions {
+        top: 70px;
+        right: 10px;
+        flex-direction: column;
+      }
+
+      .btn-save, .btn-dashboard {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+    }
