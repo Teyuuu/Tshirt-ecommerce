@@ -11,7 +11,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =====================
 let currentUser = null;
 let currentDesignId = null;
-let autoSaveInterval = null;
 
 // =====================
 // AUTHENTICATION CHECK
@@ -21,8 +20,15 @@ async function checkAuth() {
     
     if (!session) {
         // Redirect to auth page
-        alert('Please login to use the designer.');
-        window.location.href = 'auth.html';
+        Swal.fire({
+            icon: 'warning',
+            title: 'Authentication Required',
+            text: 'Please login to use the designer.',
+            confirmButtonText: 'Go to Login',
+            allowOutsideClick: false
+        }).then(() => {
+            window.location.href = 'auth.html';
+        });
         return false;
     }
     
@@ -34,9 +40,6 @@ async function checkAuth() {
     
     if (designId) {
         await loadDesign(designId);
-    } else {
-        // Start auto-save for new design
-        startAutoSave();
     }
     
     return true;
@@ -57,7 +60,11 @@ async function loadDesign(designId) {
         if (error) throw error;
         
         if (!design) {
-            alert('Design not found.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Design Not Found',
+                text: 'The requested design could not be found.'
+            });
             return;
         }
         
@@ -91,21 +98,26 @@ async function loadDesign(designId) {
             backOverlay.innerHTML = `<img src="${design.image_url}" class="canvas-design-image" alt="Design">`;
         }
         
-        // Start auto-save
-        startAutoSave();
-        
     } catch (error) {
         console.error('Error loading design:', error);
-        alert('Failed to load design.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Loading Failed',
+            text: 'Failed to load design. Please try again.'
+        });
     }
 }
 
 // =====================
 // SAVE DESIGN
 // =====================
-async function saveDesign(showIndicator = true) {
+async function saveDesign() {
     if (!currentUser) {
-        alert('Please login to save your design.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            text: 'Please login to save your design.'
+        });
         return null;
     }
     
@@ -153,7 +165,6 @@ async function saveDesign(showIndicator = true) {
             if (error) throw error;
             
             console.log('Design updated successfully');
-            if (showIndicator) showSaveIndicator('Saved');
             return currentDesignId;
             
         } else {
@@ -168,7 +179,6 @@ async function saveDesign(showIndicator = true) {
             if (data && data.length > 0) {
                 currentDesignId = data[0].id;
                 console.log('Design saved successfully');
-                if (showIndicator) showSaveIndicator('Saved');
                 
                 // Update URL with design ID
                 window.history.replaceState({}, '', `designer.html?design=${currentDesignId}`);
@@ -178,7 +188,6 @@ async function saveDesign(showIndicator = true) {
         
     } catch (error) {
         console.error('Error saving design:', error);
-        if (showIndicator) showSaveIndicator('Error');
         return null;
     }
 }
@@ -193,11 +202,18 @@ async function manualSaveDesign() {
     saveBtn.disabled = true;
     saveBtn.innerHTML = '💾 Saving...';
     
-    const designId = await saveDesign(false);
+    const designId = await saveDesign();
     
     if (designId) {
         saveBtn.innerHTML = '✓ Saved!';
-        showSaveStatus('Design saved successfully!', 'success');
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Design Saved!',
+            text: 'Your design has been saved successfully.',
+            timer: 2000,
+            showConfirmButton: false
+        });
         
         setTimeout(() => {
             saveBtn.disabled = false;
@@ -205,7 +221,12 @@ async function manualSaveDesign() {
         }, 2000);
     } else {
         saveBtn.innerHTML = '✗ Failed';
-        showSaveStatus('Failed to save design', 'error');
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Save Failed',
+            text: 'Failed to save design. Please try again.'
+        });
         
         setTimeout(() => {
             saveBtn.disabled = false;
@@ -219,16 +240,26 @@ async function manualSaveDesign() {
 // =====================
 async function proceedToCheckout() {
     if (!currentUser) {
-        alert('Please login to place an order.');
-        window.location.href = 'auth.html';
+        Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            text: 'Please login to place an order.',
+            confirmButtonText: 'Go to Login'
+        }).then(() => {
+            window.location.href = 'auth.html';
+        });
         return;
     }
     
     // Save design first
-    const designId = await saveDesign(false);
+    const designId = await saveDesign();
     
     if (!designId) {
-        alert('Failed to save design. Please try again.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Save Failed',
+            text: 'Failed to save design. Please try again.'
+        });
         return;
     }
     
@@ -240,130 +271,71 @@ async function proceedToCheckout() {
 }
 
 // =====================
-// SAVE STATUS DISPLAY
-// =====================
-function showSaveStatus(message, type = 'success') {
-    const statusDiv = document.getElementById('save-status');
-    statusDiv.textContent = message;
-    statusDiv.className = `save-status show ${type === 'error' ? 'error' : ''}`;
-    
-    setTimeout(() => {
-        statusDiv.classList.remove('show');
-    }, 3000);
-}
-
-// =====================
-// AUTO-SAVE
-// =====================
-function startAutoSave() {
-    // Save every 10 seconds
-    if (autoSaveInterval) {
-        clearInterval(autoSaveInterval);
-    }
-    
-    autoSaveInterval = setInterval(() => {
-        saveDesign();
-    }, 10000); // 10 seconds
-}
-
-function showSaveIndicator(status) {
-    // Create save indicator if it doesn't exist
-    let indicator = document.getElementById('save-indicator');
-    
-    if (!indicator) {
-        indicator = document.createElement('div');
-        indicator.id = 'save-indicator';
-        indicator.style.cssText = `
-            position: fixed;
-            top: 90px;
-            right: 20px;
-            padding: 10px 20px;
-            background: ${status === 'Saved' ? '#4CAF50' : '#f44336'};
-            color: white;
-            border-radius: 5px;
-            font-weight: 600;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
-        `;
-        document.body.appendChild(indicator);
-    }
-    
-    indicator.textContent = status === 'Saved' ? '✓ Saved' : '✗ Save Error';
-    indicator.style.background = status === 'Saved' ? '#4CAF50' : '#f44336';
-    indicator.style.opacity = '1';
-    
-    setTimeout(() => {
-        indicator.style.opacity = '0';
-    }, 2000);
-}
-
-// =====================
-// INITIALIZATION (at the end of your existing script.js)
+// INITIALIZATION
 // =====================
 document.addEventListener('DOMContentLoaded', () => {
     initializeDesigner();
     checkAuth();
 });
 
-// Update the existing functions to trigger save
-const originalUpdateText = updateText;
-updateText = function() {
-    originalUpdateText();
-    if (currentUser && currentDesignId) {
-        showSaveIndicator('Saving...');
-    }
-};
-
-const originalUpdateTextColor = updateTextColor;
-updateTextColor = function() {
-    originalUpdateTextColor();
-    if (currentUser && currentDesignId) {
-        showSaveIndicator('Saving...');
-    }
-};
-
-const originalUpdateTshirtColor = updateTshirtColor;
-updateTshirtColor = function() {
-    originalUpdateTshirtColor();
-    if (currentUser && currentDesignId) {
-        showSaveIndicator('Saving...');
-    }
-};
-
 // =====================
-// UPDATED ORDER NOW
+// UPDATED ORDER NOW WITH SWAL
 // =====================
 const originalOrderNow = orderNow;
 orderNow = async function() {
-    // Save design first
-    if (currentUser) {
-        await saveDesign();
-    }
-    
-    originalOrderNow();
-};
+    const designType = document.getElementById('design-type').value;
+    const tshirtColor = document.getElementById('tshirt-color').value;
+    let designDetails = '';
 
-// =====================
-// CLEANUP ON PAGE UNLOAD
-// =====================
-window.addEventListener('beforeunload', () => {
-    if (autoSaveInterval) {
-        clearInterval(autoSaveInterval);
+    if (designType === 'text') {
+        const text = document.getElementById('design-text').value;
+        const textColor = document.getElementById('text-color').value;
+        const fontSize = document.getElementById('font-size').value;
+        const fontFamily = document.getElementById('font-family').value;
+        designDetails = `
+            <div style="text-align: left;">
+                <p><strong>Design Type:</strong> Text</p>
+                <p><strong>Text:</strong> "${text}"</p>
+                <p><strong>Text Color:</strong> ${textColor}</p>
+                <p><strong>Font Size:</strong> ${fontSize}px</p>
+                <p><strong>Font Family:</strong> ${fontFamily}</p>
+                <p><strong>T-Shirt Color:</strong> ${tshirtColor}</p>
+            </div>
+        `;
+    } else {
+        designDetails = `
+            <div style="text-align: left;">
+                <p><strong>Design Type:</strong> Image Upload</p>
+                <p><strong>Image:</strong> ${uploadedImage ? 'Uploaded' : 'Not uploaded'}</p>
+                <p><strong>T-Shirt Color:</strong> ${tshirtColor}</p>
+            </div>
+        `;
     }
-    
-    // Save one last time
-    if (currentUser) {
-        saveDesign();
-    }
-});
+
+    Swal.fire({
+        title: 'Ready to Order?',
+        html: designDetails,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Proceed to Checkout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#045490'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            if (currentUser) {
+                await saveDesign();
+            }
+            await proceedToCheckout();
+        }
+    });
+};
 
 // Attach save button handler
 document.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("save-btn");
-  if (saveBtn) {
-    saveBtn.addEventListener("click", manualSaveDesign);
-  } else {
-    console.warn("Save button not found.");
-  }
+    const saveBtn = document.getElementById("save-btn");
+    if (saveBtn) {
+        saveBtn.addEventListener("click", manualSaveDesign);
+    } else {
+        console.warn("Save button not found.");
+    }
 });

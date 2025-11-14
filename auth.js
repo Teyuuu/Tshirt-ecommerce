@@ -1,7 +1,6 @@
 // =====================
 // SUPABASE CONFIGURATION
 // =====================
-// Replace these with your actual Supabase credentials
 const SUPABASE_URL = 'https://yxnrmerxfxnffjvmyoqn.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4bnJtZXJ4ZnhuZmZqdm15b3FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5OTE1MDIsImV4cCI6MjA3ODU2NzUwMn0.OtUz7bDP0T6XzCcWPTig0Ivc-cS1F8HMIvPoLVXYsXo';
 
@@ -15,9 +14,6 @@ function switchTab(tab) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const tabs = document.querySelectorAll('.auth-tab');
-    
-    // Clear messages
-    hideMessages();
     
     tabs.forEach(t => t.classList.remove('active'));
     
@@ -37,35 +33,6 @@ function togglePassword(inputId) {
     input.type = input.type === 'password' ? 'text' : 'password';
 }
 
-function showError(message) {
-    const errorDiv = document.getElementById('error-message');
-    errorDiv.textContent = message;
-    errorDiv.classList.add('show');
-    hideSuccess();
-}
-
-function showSuccess(message) {
-    const successDiv = document.getElementById('success-message');
-    successDiv.textContent = message;
-    successDiv.classList.add('show');
-    hideError();
-}
-
-function hideError() {
-    const errorDiv = document.getElementById('error-message');
-    errorDiv.classList.remove('show');
-}
-
-function hideSuccess() {
-    const successDiv = document.getElementById('success-message');
-    successDiv.classList.remove('show');
-}
-
-function hideMessages() {
-    hideError();
-    hideSuccess();
-}
-
 function setButtonLoading(buttonId, loading) {
     const button = document.getElementById(buttonId);
     if (loading) {
@@ -82,7 +49,6 @@ function setButtonLoading(buttonId, loading) {
 // =====================
 async function handleLogin(event) {
     event.preventDefault();
-    hideMessages();
     
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
@@ -97,26 +63,35 @@ async function handleLogin(event) {
         
         if (error) throw error;
         
-        showSuccess('Login successful! Redirecting...');
-        
         // Store user session
         localStorage.setItem('user_session', JSON.stringify(data.session));
         
-        // Redirect to designer page after 1 second
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
+        // Show success and redirect
+        await Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'Redirecting to dashboard...',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        
+        window.location.href = 'dashboard.html';
         
     } catch (error) {
         console.error('Login error:', error);
-        showError(error.message || 'Login failed. Please check your credentials.');
         setButtonLoading('login-btn', false);
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: error.message || 'Please check your credentials and try again.',
+            confirmButtonText: 'OK'
+        });
     }
 }
 
 async function handleSignup(event) {
     event.preventDefault();
-    hideMessages();
     
     const name = document.getElementById('signup-name').value;
     const email = document.getElementById('signup-email').value;
@@ -125,13 +100,23 @@ async function handleSignup(event) {
     
     // Validate passwords match
     if (password !== confirmPassword) {
-        showError('Passwords do not match!');
+        Swal.fire({
+            icon: 'error',
+            title: 'Passwords Do Not Match',
+            text: 'Please make sure both passwords are identical.',
+            confirmButtonText: 'OK'
+        });
         return;
     }
     
     // Validate password strength
     if (password.length < 6) {
-        showError('Password must be at least 6 characters long.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Weak Password',
+            text: 'Password must be at least 6 characters long.',
+            confirmButtonText: 'OK'
+        });
         return;
     }
     
@@ -150,20 +135,41 @@ async function handleSignup(event) {
         
         if (error) throw error;
         
-        showSuccess('Account created successfully! Please check your email to verify your account.');
-        
         // Clear form
         document.getElementById('signup-form').reset();
         
-        // Switch to login tab after 3 seconds
-        setTimeout(() => {
-            switchTab('login');
-            showSuccess('You can now sign in with your credentials.');
-        }, 3000);
+        // Show success message
+        await Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            html: `
+                <p>Your account has been created successfully!</p>
+                <p style="margin-top: 10px; color: #666;">Please check your email to verify your account.</p>
+            `,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#045490'
+        });
+        
+        // Switch to login tab
+        switchTab('login');
+        
+        Swal.fire({
+            icon: 'info',
+            title: 'Ready to Sign In',
+            text: 'You can now sign in with your credentials.',
+            timer: 3000,
+            showConfirmButton: false
+        });
         
     } catch (error) {
         console.error('Signup error:', error);
-        showError(error.message || 'Signup failed. Please try again.');
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Signup Failed',
+            text: error.message || 'Failed to create account. Please try again.',
+            confirmButtonText: 'OK'
+        });
     } finally {
         setButtonLoading('signup-btn', false);
     }
@@ -172,21 +178,65 @@ async function handleSignup(event) {
 async function handleForgotPassword(event) {
     event.preventDefault();
     
-    const email = prompt('Enter your email address:');
+    const { value: email } = await Swal.fire({
+        title: 'Reset Password',
+        input: 'email',
+        inputLabel: 'Enter your email address',
+        inputPlaceholder: 'your.email@example.com',
+        showCancelButton: true,
+        confirmButtonText: 'Send Reset Link',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#045490',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Please enter your email address!';
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                return 'Please enter a valid email address!';
+            }
+        }
+    });
     
     if (!email) return;
     
     try {
+        // Show loading
+        Swal.fire({
+            title: 'Sending...',
+            text: 'Please wait while we send the reset link.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/reset-password.html',
         });
         
         if (error) throw error;
         
-        showSuccess('Password reset email sent! Check your inbox.');
+        Swal.fire({
+            icon: 'success',
+            title: 'Email Sent!',
+            html: `
+                <p>Password reset email has been sent to:</p>
+                <p style="font-weight: 600; margin-top: 10px;">${email}</p>
+                <p style="margin-top: 10px; color: #666;">Please check your inbox and follow the instructions.</p>
+            `,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#045490'
+        });
+        
     } catch (error) {
         console.error('Password reset error:', error);
-        showError('Failed to send reset email. Please try again.');
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Reset Failed',
+            text: 'Failed to send reset email. Please try again.',
+            confirmButtonText: 'OK'
+        });
     }
 }
 

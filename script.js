@@ -116,12 +116,22 @@ function handleImageUpload() {
   if (!file) return;
 
   if (!file.type.match('image.*')) {
-    alert('Please upload an image file (PNG, JPG, etc.)');
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid File',
+      text: 'Please upload an image file (PNG, JPG, etc.)',
+      confirmButtonText: 'OK'
+    });
     return;
   }
 
   if (file.size > 5 * 1024 * 1024) {
-    alert('Image size should be less than 5MB');
+    Swal.fire({
+      icon: 'error',
+      title: 'File Too Large',
+      text: 'Image size should be less than 5MB',
+      confirmButtonText: 'OK'
+    });
     return;
   }
 
@@ -135,15 +145,28 @@ function handleImageUpload() {
     frontOverlay.innerHTML = imgHTML;
     backOverlay.innerHTML = imgHTML;
   };
-  reader.onerror = () => alert('Error reading file. Please try again.');
+  reader.onerror = () => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Upload Failed',
+      text: 'Error reading file. Please try again.',
+      confirmButtonText: 'OK'
+    });
+  };
   reader.readAsDataURL(file);
 }
+
 // =====================
 // ADVANCED IMAGE COLOR EDITING
 // =====================
 function changeImageColor(hexColor) {
   if (!uploadedImage) {
-    alert("Upload an image first!");
+    Swal.fire({
+      icon: 'warning',
+      title: 'No Image',
+      text: 'Please upload an image first!',
+      confirmButtonText: 'OK'
+    });
     return;
   }
 
@@ -282,7 +305,20 @@ function recolorTshirt(imgElement, originalSrc, hexColor) {
 // =====================
 // RESET DESIGN
 // =====================
-function resetDesign() {
+async function resetDesign() {
+  const result = await Swal.fire({
+    title: 'Reset Design?',
+    text: 'This will clear all your current design changes.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, reset it!',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (!result.isConfirmed) return;
+
   document.getElementById('design-type').value = 'text';
   updateDesignType();
 
@@ -301,6 +337,14 @@ function resetDesign() {
   updateFontFamily();
   updateTshirtColor();
   switchView('front');
+
+  Swal.fire({
+    icon: 'success',
+    title: 'Design Reset!',
+    text: 'Your design has been reset to default.',
+    timer: 2000,
+    showConfirmButton: false
+  });
 }
 
 // =====================
@@ -317,26 +361,49 @@ function orderNow() {
     const fontSize = document.getElementById('font-size').value;
     const fontFamily = document.getElementById('font-family').value;
     designDetails = `
-Design Type: Text
-Text: "${text}"
-Text Color: ${textColor}
-Font Size: ${fontSize}px
-Font Family: ${fontFamily}
-T-Shirt Color: ${tshirtColor}
+      <div style="text-align: left;">
+        <p><strong>Design Type:</strong> Text</p>
+        <p><strong>Text:</strong> "${text}"</p>
+        <p><strong>Text Color:</strong> ${textColor}</p>
+        <p><strong>Font Size:</strong> ${fontSize}px</p>
+        <p><strong>Font Family:</strong> ${fontFamily}</p>
+        <p><strong>T-Shirt Color:</strong> ${tshirtColor}</p>
+      </div>
     `;
   } else {
     designDetails = `
-Design Type: Image Upload
-Image: ${uploadedImage ? 'Uploaded' : 'Not uploaded'}
-T-Shirt Color: ${tshirtColor}
+      <div style="text-align: left;">
+        <p><strong>Design Type:</strong> Image Upload</p>
+        <p><strong>Image:</strong> ${uploadedImage ? 'Uploaded' : 'Not uploaded'}</p>
+        <p><strong>T-Shirt Color:</strong> ${tshirtColor}</p>
+      </div>
     `;
   }
 
-  const orderConfirm = confirm(`Ready to order your custom t-shirt?\n\n${designDetails}\n\nClick OK to proceed to checkout.`);
-  if (orderConfirm) {
-    alert('Thank you for your order! Redirecting to checkout...');
-    // window.location.href = '/checkout';
-  }
+  Swal.fire({
+    title: 'Ready to Order?',
+    html: designDetails,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Proceed to Checkout',
+    cancelButtonText: 'Continue Editing',
+    confirmButtonColor: '#045490'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Proceeding to Checkout',
+        text: 'Redirecting you to checkout...',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        // Redirect to checkout if using integration
+        if (typeof proceedToCheckout === 'function') {
+          proceedToCheckout();
+        }
+      });
+    }
+  });
 }
 
 // =====================
@@ -346,7 +413,7 @@ document.addEventListener('keydown', e => {
   // Ctrl/Cmd + Z to reset
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
     e.preventDefault();
-    if (confirm('Reset all design changes?')) resetDesign();
+    resetDesign();
   }
 
   // Tab to switch views

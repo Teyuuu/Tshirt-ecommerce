@@ -33,8 +33,15 @@ async function checkAuth() {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-        alert('Please login to checkout.');
-        window.location.href = 'auth.html';
+        Swal.fire({
+            icon: 'warning',
+            title: 'Login Required',
+            text: 'Please login to checkout.',
+            confirmButtonText: 'Go to Login',
+            allowOutsideClick: false
+        }).then(() => {
+            window.location.href = 'auth.html';
+        });
         return;
     }
     
@@ -48,8 +55,15 @@ async function loadDesign() {
     const designId = localStorage.getItem('checkout_design_id');
     
     if (!designId) {
-        alert('No design found. Please create a design first.');
-        window.location.href = 'designer.html';
+        Swal.fire({
+            icon: 'warning',
+            title: 'No Design Found',
+            text: 'Please create a design first.',
+            confirmButtonText: 'Go to Designer',
+            allowOutsideClick: false
+        }).then(() => {
+            window.location.href = 'designer.html';
+        });
         return;
     }
     
@@ -64,8 +78,14 @@ async function loadDesign() {
         if (error) throw error;
         
         if (!design) {
-            alert('Design not found.');
-            window.location.href = 'dashboard.html';
+            Swal.fire({
+                icon: 'error',
+                title: 'Design Not Found',
+                text: 'The design could not be found.',
+                confirmButtonText: 'Go to Dashboard'
+            }).then(() => {
+                window.location.href = 'dashboard.html';
+            });
             return;
         }
         
@@ -74,8 +94,14 @@ async function loadDesign() {
         
     } catch (error) {
         console.error('Error loading design:', error);
-        alert('Failed to load design.');
-        window.location.href = 'dashboard.html';
+        Swal.fire({
+            icon: 'error',
+            title: 'Loading Failed',
+            text: 'Failed to load design.',
+            confirmButtonText: 'Go to Dashboard'
+        }).then(() => {
+            window.location.href = 'dashboard.html';
+        });
     }
 }
 
@@ -189,7 +215,11 @@ function selectPayment(radio) {
 // =====================
 async function placeOrder() {
     if (!currentUser || !currentDesign) {
-        alert('Please login and create a design first.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cannot Place Order',
+            text: 'Please login and create a design first.'
+        });
         return;
     }
     
@@ -218,6 +248,17 @@ async function placeOrder() {
     };
     
     try {
+        // Show loading
+        Swal.fire({
+            title: 'Processing Order...',
+            text: 'Please wait while we process your order.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
         const { data, error } = await supabase
             .from('orders')
             .insert([orderData])
@@ -229,14 +270,30 @@ async function placeOrder() {
         localStorage.removeItem('checkout_design_id');
         
         // Show success message
-        alert(`Order placed successfully!\n\nOrder ID: ${data[0].id}\nTotal: $${totalAmount.toFixed(2)}\n\nYou will receive a confirmation email shortly.`);
+        await Swal.fire({
+            icon: 'success',
+            title: 'Order Placed!',
+            html: `
+                <p>Your order has been placed successfully!</p>
+                <p><strong>Order ID:</strong> #${data[0].id.substring(0, 8).toUpperCase()}</p>
+                <p><strong>Total:</strong> $${totalAmount.toFixed(2)}</p>
+                <p style="margin-top: 15px; color: #666;">You will receive a confirmation email shortly.</p>
+            `,
+            confirmButtonText: 'View My Orders',
+            confirmButtonColor: '#045490'
+        });
         
-        // Redirect to dashboard
+        // Redirect to dashboard orders tab
         window.location.href = 'dashboard.html?tab=orders';
         
     } catch (error) {
         console.error('Error placing order:', error);
-        alert('Failed to place order. Please try again or contact support.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Order Failed',
+            text: 'Failed to place order. Please try again or contact support.',
+            confirmButtonText: 'OK'
+        });
     }
 }
 

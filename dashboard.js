@@ -84,7 +84,12 @@ async function loadUserDesigns() {
     } catch (error) {
         console.error('Error loading designs:', error);
         loadingOverlay.style.display = 'none';
-        alert('Failed to load designs. Please refresh the page.');
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Loading Failed',
+            text: 'Failed to load designs. Please refresh the page.'
+        });
     }
 }
 
@@ -160,9 +165,18 @@ function editDesign(designId) {
 }
 
 async function deleteDesign(designId) {
-    if (!confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
-        return;
-    }
+    const result = await Swal.fire({
+        title: 'Delete Design?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    });
+    
+    if (!result.isConfirmed) return;
     
     try {
         const { error } = await supabase
@@ -173,12 +187,24 @@ async function deleteDesign(designId) {
         
         if (error) throw error;
         
+        Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Design has been deleted.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        
         // Reload designs
         loadUserDesigns();
         
     } catch (error) {
         console.error('Error deleting design:', error);
-        alert('Failed to delete design. Please try again.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Delete Failed',
+            text: 'Failed to delete design. Please try again.'
+        });
     }
 }
 
@@ -186,7 +212,17 @@ async function deleteDesign(designId) {
 // LOGOUT
 // =====================
 async function handleLogout() {
-    if (!confirm('Are you sure you want to logout?')) return;
+    const result = await Swal.fire({
+        title: 'Logout?',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#045490'
+    });
+    
+    if (!result.isConfirmed) return;
     
     try {
         const { error } = await supabase.auth.signOut();
@@ -197,7 +233,11 @@ async function handleLogout() {
         
     } catch (error) {
         console.error('Logout error:', error);
-        alert('Failed to logout. Please try again.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Logout Failed',
+            text: 'Failed to logout. Please try again.'
+        });
     }
 }
 
@@ -275,7 +315,12 @@ async function loadUserOrders() {
     } catch (error) {
         console.error('Error loading orders:', error);
         loadingOverlay.style.display = 'none';
-        alert('Failed to load orders. Please refresh the page.');
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Loading Failed',
+            text: 'Failed to load orders. Please refresh the page.'
+        });
     }
 }
 
