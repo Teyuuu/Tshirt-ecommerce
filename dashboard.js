@@ -48,6 +48,38 @@ function displayUserInfo() {
 }
 
 // =====================
+// TAB SWITCHING
+// =====================
+function switchTab(tab) {
+    const designsSection = document.getElementById('designs-section');
+    const ordersSection = document.getElementById('orders-section');
+    const designsTab = document.getElementById('designs-tab');
+    const ordersTab = document.getElementById('orders-tab');
+    
+    if (tab === 'designs') {
+        designsSection.classList.add('active');
+        ordersSection.classList.remove('active');
+        designsTab.classList.add('active');
+        ordersTab.classList.remove('active');
+        
+        if (!designsSection.dataset.loaded) {
+            loadUserDesigns();
+            designsSection.dataset.loaded = 'true';
+        }
+    } else if (tab === 'orders') {
+        designsSection.classList.remove('active');
+        ordersSection.classList.add('active');
+        designsTab.classList.remove('active');
+        ordersTab.classList.add('active');
+        
+        if (!ordersSection.dataset.loaded) {
+            loadUserOrders();
+            ordersSection.dataset.loaded = 'true';
+        }
+    }
+}
+
+// =====================
 // LOAD USER DESIGNS
 // =====================
 async function loadUserDesigns() {
@@ -55,6 +87,8 @@ async function loadUserDesigns() {
     const designsGrid = document.getElementById('designs-grid');
     const emptyState = document.getElementById('empty-designs');
     const designCount = document.getElementById('design-count');
+    
+    loadingOverlay.style.display = 'flex';
     
     try {
         const { data: designs, error } = await supabase
@@ -208,74 +242,10 @@ async function deleteDesign(designId) {
     }
 }
 
-// =====================
-// LOGOUT
-// =====================
-async function handleLogout() {
-    const result = await Swal.fire({
-        title: 'Logout?',
-        text: 'Are you sure you want to logout?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, logout',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#045490'
-    });
-    
-    if (!result.isConfirmed) return;
-    
-    try {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-        
-        localStorage.removeItem('user_session');
-        window.location.href = 'index.html';
-        
-    } catch (error) {
-        console.error('Logout error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Logout Failed',
-            text: 'Failed to logout. Please try again.'
-        });
-    }
-}
-
-// =====================
-// INITIALIZE
-// =====================
-checkAuth();
-
-// =====================
-// TAB SWITCHING
-// =====================
-function switchTab(tab) {
-    const designsSection = document.getElementById('designs-section');
-    const ordersSection = document.getElementById('orders-section');
-    const designsTab = document.getElementById('designs-tab');
-    const ordersTab = document.getElementById('orders-tab');
-    
-    if (tab === 'designs') {
-        designsSection.classList.add('active');
-        ordersSection.classList.remove('active');
-        designsTab.classList.add('active');
-        ordersTab.classList.remove('active');
-        
-        if (!designsSection.dataset.loaded) {
-            loadUserDesigns();
-            designsSection.dataset.loaded = 'true';
-        }
-    } else if (tab === 'orders') {
-        designsSection.classList.remove('active');
-        ordersSection.classList.add('active');
-        designsTab.classList.remove('active');
-        ordersTab.classList.add('active');
-        
-        if (!ordersSection.dataset.loaded) {
-            loadUserOrders();
-            ordersSection.dataset.loaded = 'true';
-        }
-    }
+function orderDesign(designId) {
+    if (!designId) return;
+    localStorage.setItem('checkout_design_id', designId);
+    window.location.href = 'checkout.html';
 }
 
 // =====================
@@ -286,6 +256,8 @@ async function loadUserOrders() {
     const ordersList = document.getElementById('orders-list');
     const emptyOrders = document.getElementById('empty-orders');
     const orderCount = document.getElementById('order-count');
+    
+    loadingOverlay.style.display = 'flex';
     
     try {
         const { data: orders, error } = await supabase
@@ -299,13 +271,12 @@ async function loadUserOrders() {
         loadingOverlay.style.display = 'none';
         
         if (!orders || orders.length === 0) {
-            ordersList.style.display = 'none';
+            ordersList.innerHTML = '';
             emptyOrders.style.display = 'block';
             orderCount.textContent = '0';
             return;
         }
         
-        ordersList.style.display = 'block';
         emptyOrders.style.display = 'none';
         orderCount.textContent = orders.length;
         
@@ -380,23 +351,23 @@ function createOrderCard(order) {
                 <div class="order-details">
                     <div class="order-detail-row">
                         <span style="color: #666;">Quantity:</span>
-                        <span style="font-weight: 600;">${order.quantity} ${order.quantity > 1 ? 'items' : 'item'}</span>
+                        <span style="font-weight: 600;color:#666;">${order.quantity} ${order.quantity > 1 ? 'items' : 'item'}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Unit Price:</span>
-                        <span style="font-weight: 600;">${order.unit_price.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">$${order.unit_price.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Subtotal:</span>
-                        <span style="font-weight: 600;">${order.subtotal.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">$${order.subtotal.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Shipping:</span>
-                        <span style="font-weight: 600;">${order.shipping_cost === 0 ? 'FREE' : order.shipping_cost.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">${order.shipping_cost === 0 ? 'FREE' : '$' + order.shipping_cost.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Payment:</span>
-                        <span style="font-weight: 600; text-transform: capitalize;">${order.payment_method}</span>
+                        <span style="font-weight: 600; text-transform: capitalize;color:#666;">${order.payment_method}</span>
                     </div>
                     ${order.tracking_number ? `
                         <div class="order-detail-row">
@@ -408,7 +379,7 @@ function createOrderCard(order) {
             </div>
             
             <div class="order-footer">
-                <div class="order-total">Total: ${order.total_amount.toFixed(2)}</div>
+                <div class="order-total">Total: $${order.total_amount.toFixed(2)}</div>
                 ${order.design_id ? `
                     <button class="btn-edit" onclick="reorderDesign('${order.design_id}')">
                         🔄 Reorder
@@ -426,8 +397,40 @@ function reorderDesign(designId) {
     window.location.href = `designer.html?design=${designId}`;
 }
 
-function orderDesign(designId) {
-    if (!designId) return;
-    localStorage.setItem('checkout_design_id', designId);
-    window.location.href = 'checkout.html';
+// =====================
+// LOGOUT
+// =====================
+async function handleLogout() {
+    const result = await Swal.fire({
+        title: 'Logout?',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#045490'
+    });
+    
+    if (!result.isConfirmed) return;
+    
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        
+        localStorage.removeItem('user_session');
+        window.location.href = 'index.html';
+        
+    } catch (error) {
+        console.error('Logout error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Logout Failed',
+            text: 'Failed to logout. Please try again.'
+        });
+    }
 }
+
+// =====================
+// INITIALIZE
+// =====================
+checkAuth();
