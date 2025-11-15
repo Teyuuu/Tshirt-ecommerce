@@ -53,21 +53,30 @@
   </style>
 </head>
 <body>
-  <nav>
-    <div class="nav-container">
-      <div class="logo">
-        <a href="index.html"><img src="images/logo.png" alt="Logo"></a>
-        <span>Canvas & Cotton</span>
-      </div>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a href="about.html">About Us</a>
-        <a href="dashboard.html" class="cta-btn">Dashboard</a>
-      </div>
-    </div>
-  </nav>
+  <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
+                <span>Canvas & Cotton</span>
+            </div>
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About Us</a>
+                <a href="dashboard.html" class="cta-btn">Dashboard</a>
+            </div>
+        </div>
+    </nav>
 
   <!-- Save Status Indicator -->
   <div id="save-status" class="save-status"></div>

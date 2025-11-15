@@ -43,6 +43,7 @@
     font-size: 1.3em;
     font-weight: 700;
     margin-bottom: 5px;
+    color: #045490;
 }
 
 .team-card p {
@@ -58,7 +59,8 @@
 }
 
 .team-card a:hover {
-    color: #ffef87;
+    color: #0675c9;
+    text-decoration: underline;
 }
 
 /* Contact Form */
@@ -101,12 +103,14 @@
     font-size: 1em;
     font-family: 'Inter', sans-serif;
     color: #333;
+    transition: all 0.3s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
 .form-group textarea {
@@ -124,6 +128,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
+    width: 100%;
 }
 
 .btn-submit:hover {
@@ -132,18 +137,59 @@
     box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
 }
 
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
+    .contact-section {
+        padding: 100px 20px 60px;
+    }
+
     .team-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .team-card {
+        padding: 20px;
+    }
+
+    .team-card img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .team-card h3 {
+        font-size: 1.1em;
     }
 
     .contact-form-section {
         padding: 40px 20px;
+        margin-top: 60px;
+    }
+
+    .contact-form-section h2 {
+        font-size: 1.6em;
     }
 }
 
 @media (max-width: 480px) {
     .team-grid {
         grid-template-columns: 1fr;
+    }
+
+    .team-card {
+        padding: 25px;
+    }
+
+    .contact-form-section {
+        padding: 30px 15px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
     }
 }

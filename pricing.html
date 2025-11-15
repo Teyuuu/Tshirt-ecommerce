@@ -306,21 +306,30 @@
   </style>
 </head>
 <body>
-  <nav>
-    <div class="nav-container">
-      <div class="logo">
-        <a href="index.html"><img src="images/logo.png" alt="Logo"></a>
-        <span>Canvas & Cotton</span>
-      </div>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="pricing.html" class="active">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a href="about.html">About Us</a>
-        <a href="designer.html" class="cta-btn">Start Designing</a>
-      </div>
-    </div>
-  </nav>
+  <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
+                <span>Canvas & Cotton</span>
+            </div>
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" >Home</a>
+                <a href="pricing.html" class="active">Pricing</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About Us</a>
+                <a href="auth.html" class="cta-btn">Start Designing</a>
+            </div>
+        </div>
+    </nav>
 
   <!-- Pricing Hero -->
   <section class="pricing-hero">
@@ -519,7 +528,7 @@
       <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
     </div>
   </footer>
-
+  
   <script>
     function switchPrintType(type) {
       const frontBtn = document.getElementById('front-btn');
@@ -540,5 +549,6 @@
       }
     }
   </script>
+  <script src="script.js"></script>
 </body>
 </html>

@@ -8,16 +8,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <div class="logo">
-                <img src="images/logo.png" alt="Canvas & Cotton Logo">
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
                 <span>Canvas & Cotton</span>
             </div>
-            <div class="nav-links">
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
                 <a href="index.html">Home</a>
                 <a href="pricing.html">Pricing</a>
-                <a href="contact.html"class="active">Contact</a>
+                <a href="contact.html" class="active">Contact</a>
                 <a href="about.html">About Us</a>
                 <a href="auth.html" class="cta-btn">Start Designing</a>
             </div>
@@ -129,5 +138,6 @@
             <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
         </div>
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>

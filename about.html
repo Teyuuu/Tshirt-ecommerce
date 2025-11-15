@@ -8,22 +8,32 @@
   <link rel="stylesheet" href="about.css">
 <body>
 
-<nav>
-    <div class="nav-container">
-      <div class="logo">
-        <a href="index.html"><img src="images/logo.png" alt="Logo"></a>
-        <span>Canvas & Cotton</span>
-      </div>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="contact.html">Contact</a>
-        <a href="about.html" class="active">About Us</a>
-        <a href="designer.html" class="cta-btn">Start Designing</a>
-      </div>
-    </div>
-  </nav>
-<section class="about-hero">
+<!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
+                <span>Canvas & Cotton</span>
+            </div>
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="pricing.html">Pricing</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html" class="active">About Us</a>
+                <a href="auth.html" class="cta-btn">Start Designing</a>
+            </div>
+        </div>
+    </nav>
+
+  <section class="about-hero">
     <div class="about-hero-overlay"></div>
     <img src="images/gallery/about.jpg" alt="Canvas & Cotton" class="about-hero-img">
     <div class="about-hero-content">
@@ -124,5 +134,6 @@
     </div>
   </footer>
   <script src="faqs.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

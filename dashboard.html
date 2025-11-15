@@ -412,14 +412,22 @@
     <nav>
         <div class="nav-container">
             <div class="logo">
-                <a href="index.html"><img src="images/logo.png" alt="Logo"></a>
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
                 <span>Canvas & Cotton</span>
             </div>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" >Home</a>
                 <a href="pricing.html">Pricing</a>
                 <a href="contact.html">Contact</a>
-                <a href="about.css">About Us</a>
+                <a href="about.html">About Us</a>
                 <a href="#" id="user-email" style="color: #045490;"></a>
             </div>
         </div>
@@ -516,5 +524,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="dashboard.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

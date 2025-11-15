@@ -1,0 +1,39 @@
+# Canvas & Cotton - Robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
+# Allow important pages
+Allow: /index.html
+Allow: /pricing.html
+Allow: /designer.html
+Allow: /contact.html
+Allow: /about.html
+
+# Allow images
+Allow: /images/
+
+# Allow CSS and JS
+Allow: /*.css
+Allow: /*.js
+
+# Sitemap location
+Sitemap: https://canvasandcotton.netlify.app/sitemap.xml
+
+# Crawl-delay (optional)
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /

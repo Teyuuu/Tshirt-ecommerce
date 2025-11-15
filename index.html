@@ -3,19 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas & Cotton - Click and wear.</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Canvas & Cotton - Create custom t-shirts online with our easy-to-use designer. Premium quality printing, fast delivery, bulk discounts. Design your perfect shirt today!">
+    <meta name="keywords" content="custom t-shirts, t-shirt printing, design t-shirts online, bulk t-shirt printing, personalized shirts, DTG printing Philippines">
+    <meta name="author" content="Canvas & Cotton">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags (Social Media) -->
+    <meta property="og:title" content="Canvas & Cotton - Custom T-Shirt Printing | Click and Wear">
+    <meta property="og:description" content="Design your perfect custom t-shirt with our easy online designer. Premium quality, fast delivery, and bulk discounts available.">
+    <meta property="og:image" content="https://canvasandcotton.netlify.app//images/og-image.jpg">
+    <meta property="og:url" content="https://canvasandcotton.netlify.app/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Canvas & Cotton - Custom T-Shirt Printing">
+    <meta name="twitter:description" content="Design your perfect custom t-shirt online. Premium quality printing and fast delivery.">
+    <meta name="twitter:image" content="https://canvasandcotton.netlify.app//images/twitter-card.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://canvasandcotton.netlify.app/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <title>Canvas & Cotton - Custom T-Shirt Printing | Design Online | Premium Quality</title>
     <link rel="stylesheet" href="style.css">
     
+    <!-- Schema.org Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Canvas & Cotton",
+      "description": "Premium custom t-shirt printing service",
+      "url": "https://yourwebsite.com",
+      "logo": "https://yourwebsite.com/images/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+63-XXX-XXX-XXXX",
+        "contactType": "Customer Service",
+        "areaServed": "PH",
+        "availableLanguage": ["English", "Filipino"]
+      },
+      "sameAs": [
+        "https://www.facebook.com/canvasandcotton",
+        "https://www.instagram.com/canvasandcotton",
+        "https://twitter.com/canvasandcotton"
+      ]
+    }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <div class="logo">
-                <img src="images/logo.png" alt="Canvas & Cotton Logo">
+                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
                 <span>Canvas & Cotton</span>
             </div>
-            <div class="nav-links">
+            
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-links" id="nav-links">
                 <a href="index.html" class="active">Home</a>
                 <a href="pricing.html">Pricing</a>
                 <a href="contact.html">Contact</a>
@@ -25,7 +82,7 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Video -->
     <section class="hero">
         <div class="hero-content">
             <h1>Create Your Perfect T-Shirt</h1>
@@ -35,23 +92,16 @@
                 <a href="pricing.html" class="btn btn-secondary">View Pricing</a>
             </div>
         </div>
-        <div class="tshirt-preview-container">
-            <div class="tshirt-mockup">
-                <svg class="tshirt-base" viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <filter id="shadow">
-                            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.2"/>
-                        </filter>
-                    </defs>
-                    <path d="M60,60 L60,30 Q60,15 75,15 L120,15 Q127.5,15 135,22.5 Q142.5,30 150,30 Q157.5,30 165,22.5 Q172.5,15 180,15 L225,15 Q240,15 240,30 L240,60 L270,90 L270,120 L255,120 L255,360 L45,360 L45,120 L30,120 L30,90 Z" 
-                          fill="white" 
-                          stroke="#e0e0e0" 
-                          stroke-width="2"
-                          filter="url(#shadow)"/>
-                </svg>
-                <div class="design-overlay">
-                    <div class="design-text-hero">Your Design Here</div>
-                </div>
+        
+        <!-- Video Container -->
+        <div class="video-container">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="images/hero.mp4" type="video/mp4">
+                <!-- Fallback for browsers that don't support video -->
+                <img src="images/logo.png" alt="Custom T-Shirt Design Preview">
+            </video>
+            <div class="video-overlay">
+                <div class="play-icon" onclick="toggleVideo()">▶</div>
             </div>
         </div>
     </section>
@@ -62,36 +112,36 @@
             <h2 class="section-title">Why Choose Canvas & Cotton?</h2>
             <p class="section-subtitle">Everything you need for perfect custom t-shirts</p>
             <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🎨</div>
                     <h3>Easy Designer</h3>
                     <p>Intuitive editor with real-time preview. Add text, upload images, and customize colors instantly.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">⚡</div>
                     <h3>Fast Production</h3>
                     <p>Your custom t-shirts printed and shipped within 2-3 business days with premium quality.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">✨</div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">✨</div>
                     <h3>Premium Quality</h3>
                     <p>100% cotton shirts with vibrant, long-lasting prints using state-of-the-art printing technology.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">💰</div>
                     <h3>Bulk Discounts</h3>
                     <p>Order more, save more. Special pricing for teams, events, and businesses of all sizes.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🚚</div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🚚</div>
                     <h3>Free Shipping</h3>
-                    <p>Free delivery on orders over $50. Track your order every step of the way.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
+                    <p>Free delivery on orders of 5+ shirts. Track your order every step of the way.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🛡️</div>
                     <h3>Satisfaction Guaranteed</h3>
                     <p>30-day money-back guarantee. If you're not happy, we'll make it right.</p>
-                </div>
+                </article>
             </div>
         </div>
     </section>
@@ -105,32 +155,28 @@
         <!-- Gallery Scrolling Loop -->
         <div class="gallery-scroll-wrapper">
             <div class="gallery-scroll-track">
-
                 <!-- Original Images -->
-                <img src="images/gallery/1.jpg" alt="Gallery Image 1">
-                <img src="images/gallery/2.jpg" alt="Gallery Image 2">
-                <img src="images/gallery/3.jpg" alt="Gallery Image 3">
-                <img src="images/gallery/4.jpg" alt="Gallery Image 4">
-                <img src="images/gallery/5.jpg" alt="Gallery Image 5">
-                <img src="images/gallery/6.jpg" alt="Gallery Image 6">
-                <img src="images/gallery/7.jpg" alt="Gallery Image 7">
-                <img src="images/gallery/8.jpg" alt="Gallery Image 8">
-                <img src="images/gallery/9.jpg" alt="Gallery Image 9">
+                <img src="images/gallery/1.jpg" alt="Custom t-shirt design example 1">
+                <img src="images/gallery/2.jpg" alt="Custom t-shirt design example 2">
+                <img src="images/gallery/3.jpg" alt="Custom t-shirt design example 3" >
+                <img src="images/gallery/5.jpg" alt="Custom t-shirt design example 5" >
+                <img src="images/gallery/6.jpg" alt="Custom t-shirt design example 6" >
+                <img src="images/gallery/7.jpg" alt="Custom t-shirt design example 7" >
+                <img src="images/gallery/8.jpg" alt="Custom t-shirt design example 8" >
+                <img src="images/gallery/9.jpg" alt="Custom t-shirt design example 9" >
 
                 <!-- Duplicates for seamless infinite scrolling -->
-                <img src="images/gallery/1.jpg" alt="Gallery Image 1">
-                <img src="images/gallery/2.jpg" alt="Gallery Image 2">
-                <img src="images/gallery/3.jpg" alt="Gallery Image 3">
-                <img src="images/gallery/4.jpg" alt="Gallery Image 4">
-                <img src="images/gallery/5.jpg" alt="Gallery Image 5">
-                <img src="images/gallery/6.jpg" alt="Gallery Image 6">
-                <img src="images/gallery/7.jpg" alt="Gallery Image 7">
-                <img src="images/gallery/8.jpg" alt="Gallery Image 8">
-                <img src="images/gallery/9.jpg" alt="Gallery Image 9">
-
+                <img src="images/gallery/1.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/2.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/3.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/4.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/5.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/6.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/7.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/8.jpg" alt="Custom t-shirt design" >
+                <img src="images/gallery/9.jpg" alt="Custom t-shirt design" >
             </div>
         </div>
-
     </section>
 
     <!-- Footer -->
@@ -161,8 +207,19 @@
             <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
         </div>
     </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script.js"></script>
+    <script>
+        // Video Toggle Function
+        function toggleVideo() {
+            const video = document.querySelector('.hero-video');
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+    </script>
 </body>
 </html>
