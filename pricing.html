@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing | Canvas & Cotton</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Canvas & Cotton Pricing - Custom t-shirt printing from ₱390/shirt. Bulk discounts available. Front & back printing options. Order now!">
+  <meta name="keywords" content="t-shirt pricing Philippines, custom shirt rates, bulk t-shirt printing prices, wholesale t-shirts">
+  <meta name="robots" content="index, follow">
+  
+  <title>Pricing | Canvas & Cotton - Custom T-Shirt Printing Rates</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .pricing-hero {
@@ -38,6 +44,7 @@
       justify-content: center;
       gap: 20px;
       margin-bottom: 60px;
+      flex-wrap: wrap;
     }
 
     .print-type-btn {
@@ -65,19 +72,23 @@
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
       margin-top: 40px;
+      align-items: stretch; /* Make cards same height */
     }
 
     .pricing-card {
       background: white;
       border-radius: 20px;
-      padding: 40px;
+      padding: 40px 30px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       transition: all 0.3s;
       position: relative;
       border: 3px solid transparent;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%; /* Ensure full height */
     }
 
     .pricing-card:hover {
@@ -92,10 +103,15 @@
       transform: scale(1.05);
     }
 
+    .pricing-card.featured:hover {
+      transform: scale(1.05) translateY(-10px);
+    }
+
     .pricing-card.featured .price,
     .pricing-card.featured h3,
     .pricing-card.featured .price-desc,
-    .pricing-card.featured .pricing-features li {
+    .pricing-card.featured .pricing-features li,
+    .pricing-card.featured .quantity-range {
       color: white;
     }
 
@@ -126,10 +142,6 @@
       font-size: 1.1em;
     }
 
-    .pricing-card.featured .quantity-range {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
     .price {
       font-size: 3.5em;
       font-weight: 700;
@@ -150,10 +162,15 @@
       font-size: 1em;
     }
 
+    .pricing-card.featured .price-desc {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
     .pricing-features {
       list-style: none;
       padding: 0;
       margin: 30px 0;
+      flex-grow: 1; /* Push button to bottom */
     }
 
     .pricing-features li {
@@ -170,6 +187,11 @@
       color: #28a745;
       font-weight: bold;
       font-size: 1.3em;
+      flex-shrink: 0;
+    }
+
+    .pricing-card.featured .pricing-features li {
+      color: white;
     }
 
     .pricing-card.featured .pricing-features li:before {
@@ -186,7 +208,7 @@
       font-size: 1.1em;
       transition: all 0.3s;
       display: block;
-      margin-top: 20px;
+      margin-top: auto; /* Align to bottom */
       border: none;
       cursor: pointer;
     }
@@ -245,7 +267,7 @@
 
     .add-ons-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
     }
 
@@ -281,55 +303,151 @@
       margin: 15px 0;
     }
 
+    /* Mobile Responsiveness */
+    @media (max-width: 1024px) {
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .pricing-card.featured:hover {
+        transform: translateY(-10px);
+      }
+
+      .pricing-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+    }
+
     @media (max-width: 768px) {
+      .pricing-hero {
+        padding: 120px 20px 60px;
+      }
+
       .pricing-hero h1 {
-        font-size: 2em;
+        font-size: 2.2em;
       }
 
       .pricing-hero p {
         font-size: 1.1em;
       }
 
+      .pricing-options {
+        padding: 60px 20px;
+      }
+
       .print-type-selector {
         flex-direction: column;
         align-items: stretch;
+        gap: 15px;
+        margin-bottom: 40px;
       }
 
-      .pricing-card.featured {
-        transform: scale(1);
+      .print-type-btn {
+        width: 100%;
+        padding: 15px 20px;
+        font-size: 1em;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .pricing-card {
+        padding: 30px 20px;
+      }
+
+      .price {
+        font-size: 2.8em;
+      }
+
+      .pricing-card h3 {
+        font-size: 1.8em;
+      }
+
+      .pricing-features li {
+        font-size: 0.95em;
+        padding: 10px 0;
+      }
+
+      .add-ons-section {
+        padding: 60px 20px;
+      }
+
+      .add-ons-title {
+        font-size: 2em;
+      }
+
+      .add-ons-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .featured-badge {
+        top: -12px;
+        right: 20px;
+        padding: 6px 15px;
+        font-size: 0.85em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pricing-hero h1 {
+        font-size: 1.8em;
+      }
+
+      .pricing-hero p {
+        font-size: 1em;
       }
 
       .price {
         font-size: 2.5em;
+      }
+
+      .pricing-card h3 {
+        font-size: 1.6em;
+      }
+
+      .print-type-btn {
+        font-size: 0.95em;
+        padding: 12px 15px;
+      }
+
+      .add-on-card {
+        padding: 25px 20px;
+      }
+
+      .add-on-price {
+        font-size: 1.5em;
       }
     }
   </style>
 </head>
 <body>
   <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo">
-                <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
-                <span>Canvas & Cotton</span>
-            </div>
-            
-            <!-- Hamburger Menu -->
-            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            
-            <div class="nav-links" id="nav-links">
-                <a href="index.html" >Home</a>
-                <a href="pricing.html" class="active">Pricing</a>
-                <a href="contact.html">Contact</a>
-                <a href="about.html">About Us</a>
-                <a href="auth.html" class="cta-btn">Start Designing</a>
-            </div>
-        </div>
-    </nav>
+  <nav>
+    <div class="nav-container">
+      <div class="logo">
+        <a href="index.html"><img src="images/logo.png" alt="Canvas & Cotton Logo"></a>
+        <span>Canvas & Cotton</span>
+      </div>
+      
+      <!-- Hamburger Menu -->
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="pricing.html" class="active">Pricing</a>
+        <a href="contact.html">Contact</a>
+        <a href="about.html">About Us</a>
+        <a href="auth.html" class="cta-btn">Start Designing</a>
+      </div>
+    </div>
+  </nav>
 
   <!-- Pricing Hero -->
   <section class="pricing-hero">
@@ -518,9 +636,9 @@
       <div class="footer-col">
         <h4>Support</h4>
         <ul>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
-            <li><a href="faqs.html">FAQ's</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="faqs.html">FAQ's</a></li>
         </ul>
       </div>
     </div>
@@ -528,8 +646,9 @@
       <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
     </div>
   </footer>
-  
+  <script src="script.js"></script>
   <script>
+    // Print Type Switch
     function switchPrintType(type) {
       const frontBtn = document.getElementById('front-btn');
       const bothBtn = document.getElementById('both-btn');
@@ -549,6 +668,5 @@
       }
     }
   </script>
-  <script src="script.js"></script>
 </body>
 </html>
