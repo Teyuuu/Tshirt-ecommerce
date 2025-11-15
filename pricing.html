@@ -5,6 +5,305 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pricing | Canvas & Cotton</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .pricing-hero {
+      text-align: center;
+      padding: 150px 40px 80px;
+      background: linear-gradient(135deg, #045490 0%, #0675c9 100%);
+      color: white;
+    }
+
+    .pricing-hero h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .pricing-hero p {
+      font-size: 1.3em;
+      opacity: 0.9;
+    }
+
+    .pricing-options {
+      padding: 80px 40px;
+      background: #f8f9ff;
+    }
+
+    .pricing-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .print-type-selector {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+
+    .print-type-btn {
+      padding: 15px 40px;
+      background: white;
+      border: 3px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #666;
+    }
+
+    .print-type-btn:hover {
+      border-color: #045490;
+      color: #045490;
+    }
+
+    .print-type-btn.active {
+      background: #045490;
+      color: white;
+      border-color: #045490;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .pricing-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      position: relative;
+      border: 3px solid transparent;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(4, 84, 144, 0.2);
+    }
+
+    .pricing-card.featured {
+      border-color: #045490;
+      background: linear-gradient(135deg, #045490 0%, #0675c9 100%);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .pricing-card.featured .price,
+    .pricing-card.featured h3,
+    .pricing-card.featured .price-desc,
+    .pricing-card.featured .pricing-features li {
+      color: white;
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -15px;
+      right: 30px;
+      background: #ffc107;
+      color: #333;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9em;
+    }
+
+    .pricing-card h3 {
+      font-size: 2em;
+      color: #045490;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .quantity-range {
+      text-align: center;
+      color: #666;
+      font-weight: 600;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+    }
+
+    .pricing-card.featured .quantity-range {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .price {
+      font-size: 3.5em;
+      font-weight: 700;
+      color: #045490;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .price-currency {
+      font-size: 0.5em;
+      vertical-align: super;
+    }
+
+    .price-desc {
+      text-align: center;
+      color: #999;
+      margin-bottom: 30px;
+      font-size: 1em;
+    }
+
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin: 30px 0;
+    }
+
+    .pricing-features li {
+      padding: 12px 0;
+      color: #666;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pricing-features li:before {
+      content: "✓";
+      color: #28a745;
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+
+    .pricing-card.featured .pricing-features li:before {
+      color: #ffc107;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1.1em;
+      transition: all 0.3s;
+      display: block;
+      margin-top: 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #045490;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #034070;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(4, 84, 144, 0.3);
+    }
+
+    .btn-white {
+      background: white;
+      color: #045490;
+      border: 2px solid white;
+    }
+
+    .btn-white:hover {
+      background: transparent;
+      color: white;
+      border-color: white;
+    }
+
+    .discount-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .add-ons-section {
+      background: white;
+      padding: 80px 40px;
+    }
+
+    .add-ons-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .add-ons-title {
+      text-align: center;
+      font-size: 2.5em;
+      color: #045490;
+      margin-bottom: 50px;
+    }
+
+    .add-ons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .add-on-card {
+      background: #f8f9ff;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    .add-on-card:hover {
+      border-color: #045490;
+      transform: translateY(-5px);
+    }
+
+    .add-on-icon {
+      font-size: 3em;
+      margin-bottom: 15px;
+    }
+
+    .add-on-card h4 {
+      font-size: 1.5em;
+      color: #045490;
+      margin-bottom: 10px;
+    }
+
+    .add-on-price {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #333;
+      margin: 15px 0;
+    }
+
+    @media (max-width: 768px) {
+      .pricing-hero h1 {
+        font-size: 2em;
+      }
+
+      .pricing-hero p {
+        font-size: 1.1em;
+      }
+
+      .print-type-selector {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .price {
+        font-size: 2.5em;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -17,87 +316,229 @@
         <a href="index.html">Home</a>
         <a href="pricing.html" class="active">Pricing</a>
         <a href="contact.html">Contact</a>
+        <a href="about.html">About Us</a>
         <a href="designer.html" class="cta-btn">Start Designing</a>
       </div>
     </div>
   </nav>
 
-  <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <div class="pricing-container">
-            <h2 class="section-title">Simple, Transparent Pricing</h2>
-            <p class="section-subtitle">No hidden fees, just great quality at fair prices</p>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Single</h3>
-                    <div class="price">₱550</div>
-                    <p class="price-desc">per shirt - Front & Back Print</p>
-                    <ul class="pricing-features">
-                        <li>1-4 shirts</li>
-                        <li>Premium 100% cotton</li>
-                        <li>Full color printing</li>
-                        <li>Standard shipping</li>
-                        <li>Retail Price</li>
-                    </ul>
-                    <a href="auth.html" class="btn btn-secondary">Order Now</a>
-                </div>
-                <div class="pricing-card featured">
-                    <h3>Bulk</h3>
-                    <div class="price">₱530</div>
-                    <p class="price-desc">per shirt</p>
-                    <ul class="pricing-features">
-                        <li>5-25 shirts</li>
-                        <li>Premium 100% cotton</li>
-                        <li>Full color printing</li>
-                        <li>FREE shipping</li>
-                        <li>Bulk discount applied</li>
-                        <li>For events, clubs, small teams</li>
-                    </ul>
-                    <a href="auth.html" class="btn btn-white">Order Now</a>
-                </div>
-                <div class="pricing-card">
-                    <h3>Wholesale</h3>
-                    <div class="price">₱490</div>
-                    <p class="price-desc">per shirt</p>
-                    <ul class="pricing-features">
-                        <li>26+ shirts</li>
-                        <li>Premium 100% cotton</li>
-                        <li>Full color printing</li>
-                        <li>FREE express shipping</li>
-                        <li>Priority production</li>
-                        <li>Dedicated support</li>
-                        <li>for Resellers, orgs, campaigns</li>
-                    </ul>
-                    <a href="auth.html" class="btn btn-secondary">Order Now</a>
-                </div>
-            </div>
+  <!-- Pricing Hero -->
+  <section class="pricing-hero">
+    <h1>Simple, Transparent Pricing</h1>
+    <p>Quality custom t-shirts at wholesale prices. No hidden fees.</p>
+  </section>
+
+  <!-- Print Type Selector -->
+  <section class="pricing-options">
+    <div class="pricing-container">
+      <div class="print-type-selector">
+        <button class="print-type-btn active" onclick="switchPrintType('front')" id="front-btn">
+          Front or Back Print Only
+        </button>
+        <button class="print-type-btn" onclick="switchPrintType('both')" id="both-btn">
+          Front & Back Print
+        </button>
+      </div>
+
+      <!-- Front Print Only Pricing -->
+      <div id="front-pricing" class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Single</h3>
+          <div class="quantity-range">1-4 shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>450
+          </div>
+          <p class="price-desc">per shirt • Front Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing</li>
+            <li>High-quality DTG print</li>
+            <li>Standard shipping</li>
+            <li>Perfect for personal use</li>
+          </ul>
+          <a href="auth.html" class="btn btn-primary">Order Now</a>
         </div>
-    </section>
-   <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h4>Canvas & Cotton</h4>
-                <p>Premium custom t-shirt printing with fast delivery and unbeatable quality.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Features</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="auth.html">Designer</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
-            </div>
+
+        <div class="pricing-card featured">
+          <div class="featured-badge">⭐ MOST POPULAR</div>
+          <div class="discount-badge">-4% OFF</div>
+          <h3>Bulk</h3>
+          <div class="quantity-range">5-25 shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>430
+          </div>
+          <p class="price-desc">per shirt • Front Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing</li>
+            <li>High-quality DTG print</li>
+            <li>FREE shipping</li>
+            <li>Bulk discount applied</li>
+            <li>Great for events & teams</li>
+          </ul>
+          <a href="auth.html" class="btn btn-white">Order Now</a>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
+
+        <div class="pricing-card">
+          <div class="discount-badge">-13% OFF</div>
+          <h3>Wholesale</h3>
+          <div class="quantity-range">26+ shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>390
+          </div>
+          <p class="price-desc">per shirt • Front Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing</li>
+            <li>High-quality DTG print</li>
+            <li>FREE express shipping</li>
+            <li>Priority production</li>
+            <li>Dedicated support</li>
+            <li>Perfect for resellers</li>
+          </ul>
+          <a href="auth.html" class="btn btn-primary">Order Now</a>
         </div>
-    </footer>
+      </div>
+
+      <!-- Front & Back Print Pricing -->
+      <div id="both-pricing" class="pricing-grid" style="display: none;">
+        <div class="pricing-card">
+          <h3>Single</h3>
+          <div class="quantity-range">1-4 shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>550
+          </div>
+          <p class="price-desc">per shirt • Front & Back Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing (both sides)</li>
+            <li>High-quality DTG print</li>
+            <li>Standard shipping</li>
+            <li>Maximum design freedom</li>
+          </ul>
+          <a href="auth.html" class="btn btn-primary">Order Now</a>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="featured-badge">⭐ MOST POPULAR</div>
+          <div class="discount-badge">-4% OFF</div>
+          <h3>Bulk</h3>
+          <div class="quantity-range">5-25 shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>530
+          </div>
+          <p class="price-desc">per shirt • Front & Back Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing (both sides)</li>
+            <li>High-quality DTG print</li>
+            <li>FREE shipping</li>
+            <li>Bulk discount applied</li>
+            <li>Perfect for events & clubs</li>
+          </ul>
+          <a href="auth.html" class="btn btn-white">Order Now</a>
+        </div>
+
+        <div class="pricing-card">
+          <div class="discount-badge">-13% OFF</div>
+          <h3>Wholesale</h3>
+          <div class="quantity-range">26+ shirts</div>
+          <div class="price">
+            <span class="price-currency">₱</span>490
+          </div>
+          <p class="price-desc">per shirt • Front & Back Print</p>
+          <ul class="pricing-features">
+            <li>Premium 100% cotton</li>
+            <li>Full color printing (both sides)</li>
+            <li>High-quality DTG print</li>
+            <li>FREE express shipping</li>
+            <li>Priority production</li>
+            <li>Dedicated support</li>
+            <li>Best value for businesses</li>
+          </ul>
+          <a href="auth.html" class="btn btn-primary">Order Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add-ons Section -->
+  <section class="add-ons-section">
+    <div class="add-ons-container">
+      <h2 class="add-ons-title">Optional Add-Ons</h2>
+      <div class="add-ons-grid">
+        <div class="add-on-card">
+          <div class="add-on-icon">🏃</div>
+          <h4>Rush Fee</h4>
+          <p style="color: #333;">Express 2-3 day production</p>
+          <div class="add-on-price">₱50<span style="font-size: 0.5em;">/shirt</span></div>
+        </div>
+
+        <div class="add-on-card">
+          <div class="add-on-icon">📦</div>
+          <h4>Premium Packaging</h4>
+          <p style="color: #333;">Individual poly bags with branded boxes</p>
+          <div class="add-on-price">₱30<span style="font-size: 0.5em;">/shirt</span></div>
+        </div>
+
+        <div class="add-on-card">
+          <div class="add-on-icon">🏷️</div>
+          <h4>Custom Tags</h4>
+          <p style="color: #333;">Your own branded neck labels</p>
+          <div class="add-on-price">₱25<span style="font-size: 0.5em;">/shirt</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>Canvas & Cotton</h4>
+        <p>Premium custom t-shirt printing with fast delivery and unbeatable quality.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="designer.html">Designer</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="faqs.html">FAQ's</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Canvas & Cotton. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function switchPrintType(type) {
+      const frontBtn = document.getElementById('front-btn');
+      const bothBtn = document.getElementById('both-btn');
+      const frontPricing = document.getElementById('front-pricing');
+      const bothPricing = document.getElementById('both-pricing');
+
+      if (type === 'front') {
+        frontBtn.classList.add('active');
+        bothBtn.classList.remove('active');
+        frontPricing.style.display = 'grid';
+        bothPricing.style.display = 'none';
+      } else {
+        frontBtn.classList.remove('active');
+        bothBtn.classList.add('active');
+        frontPricing.style.display = 'none';
+        bothPricing.style.display = 'grid';
+      }
+    }
+  </script>
 </body>
 </html>

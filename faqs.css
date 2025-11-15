@@ -1,0 +1,75 @@
+/* FAQ Section */
+.faq-section {
+    max-width: 850px;
+    margin: 60px auto;
+    padding: 20px;
+}
+
+.faq-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 35px;
+    color: #045490;
+}
+
+.faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.faq-item {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+/* Button (Question) */
+.faq-question {
+    width: 100%;
+    background: #f5f9ff;
+    color: #045490;
+    padding: 18px 20px;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+}
+
+.faq-question::after {
+    content: "+";
+    position: absolute;
+    right: 20px;
+    font-size: 1.3rem;
+    transition: 0.3s;
+}
+
+/* Open state arrow */
+.faq-item.active .faq-question::after {
+    transform: rotate(45deg);
+}
+
+/* Answer */
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    background: white;
+    padding: 0 20px;
+    transition: max-height 0.35s ease;
+}
+
+.faq-answer p {
+    padding: 15px 0 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.faq-item.active {
+    box-shadow: 0 6px 25px rgba(0, 140, 255, 0.18);
+}

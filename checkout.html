@@ -74,6 +74,7 @@
         .detail-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid #e0e0e0;
         }
@@ -89,6 +90,42 @@
 
         .detail-value {
             color: #333;
+        }
+
+        .print-side-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .print-side-option {
+            padding: 15px;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .print-side-option:hover {
+            border-color: #045490;
+        }
+
+        .print-side-option.selected {
+            border-color: #045490;
+            background: #f8f9ff;
+        }
+
+        .print-side-option h4 {
+            color: #045490;
+            margin-bottom: 5px;
+        }
+
+        .print-side-option p {
+            font-size: 0.9em;
+            color: #666;
         }
 
         .quantity-selector {
@@ -139,7 +176,7 @@
             justify-content: space-between;
             padding: 15px 0;
             font-size: 1.1em;
-            color: black;
+            color: #333;
         }
 
         .summary-row.total {
@@ -148,6 +185,51 @@
             padding-top: 20px;
             font-size: 1.3em;
             font-weight: 700;
+            color: #045490;
+        }
+
+        .discount-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .add-on-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .add-on-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .add-on-info {
+            flex: 1;
+        }
+
+        .add-on-info h5 {
+            margin-bottom: 3px;
+            color: #333;
+        }
+
+        .add-on-info p {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .add-on-price {
+            font-weight: 600;
             color: #045490;
         }
 
@@ -246,6 +328,10 @@
             .order-summary {
                 position: static;
             }
+
+            .print-side-selector {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -261,6 +347,7 @@
                 <a href="index.html">Home</a>
                 <a href="pricing.html">Pricing</a>
                 <a href="contact.html">Contact</a>
+                <a href="about.html">About Us</a>
                 <a href="dashboard.html">Dashboard</a>
             </div>
         </div>
@@ -299,6 +386,21 @@
                             <span class="detail-label">Text Content:</span>
                             <span class="detail-value" id="text-content-display">-</span>
                         </div>
+                    </div>
+
+                    <h3 class="section-heading" style="margin-top: 30px;">🖨️ Print Options</h3>
+                    <div class="print-side-selector">
+                        <div class="print-side-option selected" id="print-front" onclick="selectPrintSide('front')">
+                            <h4>Front Only</h4>
+                            <p>Starting at ₱450</p>
+                        </div>
+                        <div class="print-side-option" id="print-both" onclick="selectPrintSide('both')">
+                            <h4>Front & Back</h4>
+                            <p>Starting at ₱550</p>
+                        </div>
+                    </div>
+
+                    <div class="design-details" style="margin-top: 20px;">
                         <div class="detail-row">
                             <span class="detail-label">Quantity:</span>
                             <div class="quantity-selector">
@@ -306,6 +408,18 @@
                                 <input type="number" id="quantity" class="qty-input" value="1" min="1" onchange="updatePricing()">
                                 <button class="qty-btn" onclick="changeQuantity(1)">+</button>
                             </div>
+                        </div>
+                    </div>
+
+                    <h3 class="section-heading" style="margin-top: 30px;">➕ Add-Ons</h3>
+                    <div class="design-details">
+                        <div class="add-on-option">
+                            <input type="checkbox" id="rush-fee" onchange="toggleRushFee(this)">
+                            <div class="add-on-info">
+                                <h5>🏃 Rush Processing</h5>
+                                <p>Express 2-3 day production</p>
+                            </div>
+                            <div class="add-on-price">₱50/shirt</div>
                         </div>
                     </div>
                 </div>
@@ -316,7 +430,7 @@
 
                     <div class="summary-row">
                         <span>Price per item:</span>
-                        <span id="unit-price">$24.99</span>
+                        <span id="unit-price">₱450.00</span>
                     </div>
                     <div class="summary-row">
                         <span>Quantity:</span>
@@ -324,15 +438,24 @@
                     </div>
                     <div class="summary-row">
                         <span>Subtotal:</span>
-                        <span id="subtotal">$24.99</span>
+                        <span id="subtotal">₱450.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Rush Fee:</span>
+                        <span id="rush-fee-display">-</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping:</span>
-                        <span id="shipping">$5.00</span>
+                        <span id="shipping">₱100.00</span>
                     </div>
+
+                    <div class="discount-badge" id="discount-badge">
+                        Discount Applied!
+                    </div>
+
                     <div class="summary-row total">
                         <span>Total:</span>
-                        <span id="total">$29.99</span>
+                        <span id="total">₱550.00</span>
                     </div>
 
                     <!-- Payment Methods -->
@@ -378,11 +501,11 @@
                     </div>
 
                     <button class="checkout-btn" onclick="placeOrder()">
-                        Place Order - <span id="final-total">$29.99</span>
+                        Place Order - <span id="final-total">₱550.00</span>
                     </button>
 
                     <p style="text-align: center; color: #999; font-size: 0.9em; margin-top: 15px;">
-                        🔒 Secure checkout powered by Stripe
+                        🔒 Secure checkout • Free shipping for 5+ items
                     </p>
                 </div>
             </div>
@@ -407,7 +530,9 @@
             <div class="footer-col">
                 <h4>Support</h4>
                 <ul>
+                    <li><a href="about.html">About Us</a></li>
                     <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="faqs.html">FAQ's</a></li>
                 </ul>
             </div>
         </div>
