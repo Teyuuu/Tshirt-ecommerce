@@ -296,7 +296,7 @@ async function loadUserOrders() {
 }
 
 // =====================
-// CREATE ORDER CARD
+// CREATE ORDER CARD (UPDATED WITH PHP CURRENCY)
 // =====================
 function createOrderCard(order) {
     const createdDate = new Date(order.created_at).toLocaleDateString('en-US', {
@@ -333,6 +333,9 @@ function createOrderCard(order) {
         `;
     }
     
+    // Display print side info
+    const printSideText = order.print_side === 'both' ? 'Front & Back' : 'Front Only';
+    
     return `
         <div class="order-card">
             <div class="order-header">
@@ -350,24 +353,34 @@ function createOrderCard(order) {
                 
                 <div class="order-details">
                     <div class="order-detail-row">
+                        <span style="color: #666;">Print Type:</span>
+                        <span style="font-weight: 600; color: #666;">${printSideText}</span>
+                    </div>
+                    <div class="order-detail-row">
                         <span style="color: #666;">Quantity:</span>
-                        <span style="font-weight: 600;color:#666;">${order.quantity} ${order.quantity > 1 ? 'items' : 'item'}</span>
+                        <span style="font-weight: 600; color: #666;">${order.quantity} ${order.quantity > 1 ? 'items' : 'item'}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Unit Price:</span>
-                        <span style="font-weight: 600;color:#666;">$${order.unit_price.toFixed(2)}</span>
+                        <span style="font-weight: 600; color: #666;">₱${order.unit_price.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Subtotal:</span>
-                        <span style="font-weight: 600;color:#666;">$${order.subtotal.toFixed(2)}</span>
+                        <span style="font-weight: 600; color: #666;">₱${order.subtotal.toFixed(2)}</span>
                     </div>
+                    ${order.rush_fee ? `
+                        <div class="order-detail-row">
+                            <span style="color: #666;">Rush Fee:</span>
+                            <span style="font-weight: 600; color: #666;">₱${order.rush_fee_cost.toFixed(2)}</span>
+                        </div>
+                    ` : ''}
                     <div class="order-detail-row">
                         <span style="color: #666;">Shipping:</span>
-                        <span style="font-weight: 600;color:#666;">${order.shipping_cost === 0 ? 'FREE' : '$' + order.shipping_cost.toFixed(2)}</span>
+                        <span style="font-weight: 600; color: #666;">${order.shipping_cost === 0 ? 'FREE' : '₱' + order.shipping_cost.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Payment:</span>
-                        <span style="font-weight: 600; text-transform: capitalize;color:#666;">${order.payment_method}</span>
+                        <span style="font-weight: 600; text-transform: capitalize; color: #666;">${order.payment_method}</span>
                     </div>
                     ${order.tracking_number ? `
                         <div class="order-detail-row">
@@ -379,7 +392,7 @@ function createOrderCard(order) {
             </div>
             
             <div class="order-footer">
-                <div class="order-total">Total: $${order.total_amount.toFixed(2)}</div>
+                <div class="order-total">Total: ₱${order.total_amount.toFixed(2)}</div>
                 ${order.design_id ? `
                     <button class="btn-edit" onclick="reorderDesign('${order.design_id}')">
                         🔄 Reorder
