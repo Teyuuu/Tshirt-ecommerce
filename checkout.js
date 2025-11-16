@@ -37,53 +37,119 @@ const ADD_ONS = {
 // INITIALIZATION
 // =====================
 async function init() {
-    await checkAuth();
-    await loadDesign();
-    updatePricing();
+    try {
+        console.log('Initializing checkout page...');
+        
+        await checkAuth();
+        if (!currentUser) {
+            console.log('No user authenticated, stopping initialization');
+            return;
+        }
+        
+        await loadDesign();
+        if (!currentDesign) {
+            console.log('No design loaded, stopping initialization');
+            return;
+        }
+        
+        updatePricing();
+        console.log('Checkout page initialized successfully');
+        
+    } catch (error) {
+        console.error('Initialization error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Initialization Failed',
+            text: 'Failed to initialize checkout. Please try again.',
+            confirmButtonText: 'Go to Dashboard'
+        }).then(() => {
+            window.location.href = 'dashboard.html';
+        });
+    }
 }
 
 // =====================
 // AUTHENTICATION CHECK
 // =====================
 async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Login Required',
-            text: 'Please login to checkout.',
-            confirmButtonText: 'Go to Login',
-            allowOutsideClick: false
-        }).then(() => {
-            window.location.href = 'auth.html';
-        });
-        return;
+    try {
+        console.log('Checking authentication...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.error('Auth session error:', error);
+            throw error;
+        }
+        
+        if (!session) {
+            console.log('No session found, redirecting to login');
+            
+            // Save the design ID before redirecting
+            const urlParams = new URLSearchParams(window.location.search);
+            const designId = urlParams.get('design') || localStorage.getItem('checkout_design_id');
+            console.log('Saving pending design ID:', designId);
+            
+            if (designId) {
+                sessionStorage.setItem('pending_checkout_design', designId);
+            }
+            
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Login Required',
+                text: 'Please login to checkout.',
+                confirmButtonText: 'Go to Login',
+                allowOutsideClick: false
+            });
+            
+            window.location.href = 'auth.html?redirect=checkout';
+            return;
+        }
+        
+        currentUser = session.user;
+        console.log('User authenticated:', currentUser.email);
+        
+        // Check if there's a pending checkout design after login
+        const pendingDesign = sessionStorage.getItem('pending_checkout_design');
+        if (pendingDesign) {
+            console.log('Found pending design, restoring:', pendingDesign);
+            localStorage.setItem('checkout_design_id', pendingDesign);
+            sessionStorage.removeItem('pending_checkout_design');
+        }
+        
+    } catch (error) {
+        console.error('Auth check error:', error);
+        throw error;
     }
-    
-    currentUser = session.user;
 }
 
 // =====================
 // LOAD DESIGN
 // =====================
 async function loadDesign() {
-    const designId = localStorage.getItem('checkout_design_id');
+    // Check URL parameter first, then localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    let designId = urlParams.get('design') || localStorage.getItem('checkout_design_id');
+    
+    console.log('Loading design ID:', designId);
     
     if (!designId) {
-        Swal.fire({
+        console.error('No design ID found');
+        await Swal.fire({
             icon: 'warning',
             title: 'No Design Found',
             text: 'Please select a design from your dashboard first.',
             confirmButtonText: 'Go to Dashboard',
             allowOutsideClick: false
-        }).then(() => {
-            window.location.href = 'dashboard.html';
         });
+        window.location.href = 'dashboard.html';
         return;
     }
     
+    // Store in localStorage for consistency
+    localStorage.setItem('checkout_design_id', designId);
+    
     try {
+        console.log('Fetching design from database...');
         const { data: design, error } = await supabase
             .from('designs')
             .select('*')
@@ -91,33 +157,36 @@ async function loadDesign() {
             .eq('user_id', currentUser.id)
             .single();
         
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+        }
         
         if (!design) {
-            Swal.fire({
+            console.error('Design not found for ID:', designId);
+            await Swal.fire({
                 icon: 'error',
                 title: 'Design Not Found',
-                text: 'The design could not be found.',
+                text: 'The design could not be found or you do not have access to it.',
                 confirmButtonText: 'Go to Dashboard'
-            }).then(() => {
-                window.location.href = 'dashboard.html';
             });
+            window.location.href = 'dashboard.html';
             return;
         }
         
         currentDesign = design;
+        console.log('Design loaded successfully:', design);
         displayDesign();
         
     } catch (error) {
         console.error('Error loading design:', error);
-        Swal.fire({
+        await Swal.fire({
             icon: 'error',
             title: 'Loading Failed',
-            text: 'Failed to load design.',
+            text: 'Failed to load design. Please try again.',
             confirmButtonText: 'Go to Dashboard'
-        }).then(() => {
-            window.location.href = 'dashboard.html';
         });
+        window.location.href = 'dashboard.html';
     }
 }
 
@@ -389,6 +458,7 @@ async function placeOrder() {
         
         // Clear checkout design ID
         localStorage.removeItem('checkout_design_id');
+        sessionStorage.removeItem('pending_checkout_design');
         
         // Show success message
         await Swal.fire({
@@ -425,6 +495,6 @@ async function placeOrder() {
 // INITIALIZE ON LOAD
 // =====================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Checkout page loaded');
+    console.log('Checkout page DOM loaded');
     init();
 });

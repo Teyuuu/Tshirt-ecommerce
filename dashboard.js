@@ -243,9 +243,21 @@ async function deleteDesign(designId) {
 }
 
 function orderDesign(designId) {
-    if (!designId) return;
+    if (!designId) {
+        console.error('No design ID provided to orderDesign');
+        return;
+    }
+    
+    console.log('Ordering design:', designId);
+    
+    // Store in localStorage AND pass via URL for redundancy
     localStorage.setItem('checkout_design_id', designId);
-    window.location.href = 'checkout.html';
+    
+    // Also store in sessionStorage as backup
+    sessionStorage.setItem('checkout_design_id', designId);
+    
+    // Redirect with design ID in URL
+    window.location.href = `checkout.html?design=${designId}`;
 }
 
 // =====================
