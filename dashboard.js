@@ -355,15 +355,15 @@ function createOrderCard(order) {
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Unit Price:</span>
-                        <span style="font-weight: 600;color:#666;">$${order.unit_price.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">₱${order.unit_price.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Subtotal:</span>
-                        <span style="font-weight: 600;color:#666;">$${order.subtotal.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">₱${order.subtotal.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Shipping:</span>
-                        <span style="font-weight: 600;color:#666;">${order.shipping_cost === 0 ? 'FREE' : '$' + order.shipping_cost.toFixed(2)}</span>
+                        <span style="font-weight: 600;color:#666;">${order.shipping_cost === 0 ? 'FREE' : '₱' + order.shipping_cost.toFixed(2)}</span>
                     </div>
                     <div class="order-detail-row">
                         <span style="color: #666;">Payment:</span>
@@ -379,7 +379,7 @@ function createOrderCard(order) {
             </div>
             
             <div class="order-footer">
-                <div class="order-total">Total: $${order.total_amount.toFixed(2)}</div>
+                <div class="order-total">Total: ₱${order.total_amount.toFixed(2)}</div>
                 ${order.design_id ? `
                     <button class="btn-edit" onclick="reorderDesign('${order.design_id}')">
                         🔄 Reorder
