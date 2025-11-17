@@ -421,6 +421,69 @@
         font-size: 1.5em;
       }
     }
+
+  .shipping-section {
+  background: #f8f9ff;
+  padding: 80px 40px;
+}
+
+.shipping-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.shipping-title {
+  text-align: center;
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #045490;
+  margin-bottom: 50px;
+}
+
+.shipping-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.shipping-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+  transition: 0.3s;
+}
+
+.shipping-card:hover {
+  border-color: #045490;
+  transform: translateY(-5px);
+}
+
+.shipping-card h3 {
+  font-size: 1.6em;
+  font-weight: 700;
+  color: #045490;
+  margin-bottom: 10px;
+}
+
+.ship-desc {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.ship-price {
+  font-size: 2em;
+  font-weight: 700;
+  color: #333;
+}
+
+.ship-price .small {
+  font-size: 0.5em;
+  vertical-align: middle;
+  color: #666;
+}
+
   </style>
 </head>
 <body>
@@ -600,23 +663,45 @@
           <p style="color: #333;">Express 2-3 day production</p>
           <div class="add-on-price">₱50<span style="font-size: 0.5em;">/shirt</span></div>
         </div>
-
-        <div class="add-on-card">
-          <div class="add-on-icon">📦</div>
-          <h4>Premium Packaging</h4>
-          <p style="color: #333;">Individual poly bags with branded boxes</p>
-          <div class="add-on-price">₱30<span style="font-size: 0.5em;">/shirt</span></div>
-        </div>
-
-        <div class="add-on-card">
-          <div class="add-on-icon">🏷️</div>
-          <h4>Custom Tags</h4>
-          <p style="color: #333;">Your own branded neck labels</p>
-          <div class="add-on-price">₱25<span style="font-size: 0.5em;">/shirt</span></div>
-        </div>
       </div>
     </div>
   </section>
+
+  <!-- Shipping & Pick-up Section -->
+<section class="shipping-section">
+  <div class="shipping-container">
+    <h2 class="shipping-title">Shipping & In-Store Pick-Up</h2>
+
+    <div class="shipping-grid">
+
+      <div class="shipping-card">
+        <h3>In-Store Pick-Up</h3>
+        <p class="ship-desc">Free pick-up at our shop.</p>
+        <div class="ship-price">₱0</div>
+      </div>
+
+      <div class="shipping-card">
+        <h3>Retail Orders</h3>
+        <p class="ship-desc">1–4 shirts</p>
+        <div class="ship-price">₱80 <span class="small">flat rate nationwide</span></div>
+      </div>
+
+      <div class="shipping-card">
+        <h3>Bulk Orders</h3>
+        <p class="ship-desc">5–25 shirts</p>
+        <div class="ship-price">₱150 <span class="small">flat rate nationwide</span></div>
+      </div>
+
+      <div class="shipping-card">
+        <h3>Wholesale Orders</h3>
+        <p class="ship-desc">26+ shirts</p>
+        <div class="ship-price">₱250 <span class="small">flat rate nationwide</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
   <!-- Footer -->
   <footer id="contact">
