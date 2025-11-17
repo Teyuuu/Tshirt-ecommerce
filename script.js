@@ -6,11 +6,24 @@ let uploadedImage = null;
 let originalTshirtImageFront = null;
 let originalTshirtImageBack = null;
 
+// Drag and resize state
+let isDragging = false;
+let isResizing = false;
+let currentElement = null;
+let startX = 0;
+let startY = 0;
+let startWidth = 0;
+let startHeight = 0;
+let offsetX = 0;
+let offsetY = 0;
 
 // =====================
 // INITIALIZATION
 // =====================
-document.addEventListener('DOMContentLoaded', () => initializeDesigner());
+document.addEventListener('DOMContentLoaded', () => {
+  initializeDesigner();
+  setupDragAndResize();
+});
 
 function initializeDesigner() {
   updateText();
@@ -18,6 +31,212 @@ function initializeDesigner() {
   updateFontSize();
   updateFontFamily();
   updateTshirtColor();
+}
+
+// =====================
+// DRAG AND RESIZE SETUP
+// =====================
+function setupDragAndResize() {
+  // Mouse events
+  document.addEventListener('mousedown', handleMouseDown);
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
+  
+  // Touch events for mobile
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchEnd);
+}
+
+function makeElementDraggable(element) {
+  element.style.position = 'absolute';
+  element.style.cursor = 'move';
+  element.style.userSelect = 'none';
+  element.classList.add('draggable-element');
+  
+  // Add resize handle
+  if (!element.querySelector('.resize-handle')) {
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'resize-handle';
+    resizeHandle.innerHTML = '⤡';
+    element.appendChild(resizeHandle);
+  }
+}
+
+function handleMouseDown(e) {
+  const target = e.target;
+  
+  // Check if clicking on resize handle
+  if (target.classList.contains('resize-handle')) {
+    isResizing = true;
+    currentElement = target.parentElement;
+    startX = e.clientX;
+    startY = e.clientY;
+    
+    const rect = currentElement.getBoundingClientRect();
+    startWidth = rect.width;
+    startHeight = rect.height;
+    
+    e.preventDefault();
+    return;
+  }
+  
+  // Check if clicking on draggable element
+  if (target.classList.contains('canvas-design-text') || 
+      target.classList.contains('canvas-design-image') ||
+      target.classList.contains('draggable-element')) {
+    isDragging = true;
+    currentElement = target;
+    
+    const rect = currentElement.getBoundingClientRect();
+    const parent = currentElement.parentElement.getBoundingClientRect();
+    
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    currentElement.style.zIndex = '100';
+    e.preventDefault();
+  }
+}
+
+function handleMouseMove(e) {
+  if (isDragging && currentElement) {
+    const parent = currentElement.parentElement.getBoundingClientRect();
+    
+    let newX = e.clientX - parent.left - offsetX;
+    let newY = e.clientY - parent.top - offsetY;
+    
+    // Constrain to parent bounds
+    const rect = currentElement.getBoundingClientRect();
+    newX = Math.max(0, Math.min(newX, parent.width - rect.width));
+    newY = Math.max(0, Math.min(newY, parent.height - rect.height));
+    
+    currentElement.style.left = newX + 'px';
+    currentElement.style.top = newY + 'px';
+    
+  } else if (isResizing && currentElement) {
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    
+    // Calculate new dimensions (maintain aspect ratio for images)
+    let newWidth = startWidth + deltaX;
+    let newHeight = startHeight + deltaY;
+    
+    // Set minimum size
+    newWidth = Math.max(50, newWidth);
+    newHeight = Math.max(30, newHeight);
+    
+    if (currentElement.classList.contains('canvas-design-image')) {
+      const img = currentElement;
+      const aspectRatio = img.naturalWidth / img.naturalHeight;
+      newHeight = newWidth / aspectRatio;
+    }
+    
+    currentElement.style.width = newWidth + 'px';
+    if (currentElement.classList.contains('canvas-design-text')) {
+      currentElement.style.height = newHeight + 'px';
+    }
+    
+    e.preventDefault();
+  }
+}
+
+function handleMouseUp() {
+  if (currentElement) {
+    currentElement.style.zIndex = '10';
+  }
+  isDragging = false;
+  isResizing = false;
+  currentElement = null;
+}
+
+// Touch event handlers
+function handleTouchStart(e) {
+  if (e.touches.length !== 1) return;
+  
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  if (target.classList.contains('resize-handle')) {
+    isResizing = true;
+    currentElement = target.parentElement;
+    startX = touch.clientX;
+    startY = touch.clientY;
+    
+    const rect = currentElement.getBoundingClientRect();
+    startWidth = rect.width;
+    startHeight = rect.height;
+    
+    e.preventDefault();
+    return;
+  }
+  
+  if (target.classList.contains('canvas-design-text') || 
+      target.classList.contains('canvas-design-image') ||
+      target.classList.contains('draggable-element')) {
+    isDragging = true;
+    currentElement = target;
+    
+    const rect = currentElement.getBoundingClientRect();
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
+    
+    currentElement.style.zIndex = '100';
+    e.preventDefault();
+  }
+}
+
+function handleTouchMove(e) {
+  if (e.touches.length !== 1) return;
+  
+  const touch = e.touches[0];
+  
+  if (isDragging && currentElement) {
+    const parent = currentElement.parentElement.getBoundingClientRect();
+    
+    let newX = touch.clientX - parent.left - offsetX;
+    let newY = touch.clientY - parent.top - offsetY;
+    
+    const rect = currentElement.getBoundingClientRect();
+    newX = Math.max(0, Math.min(newX, parent.width - rect.width));
+    newY = Math.max(0, Math.min(newY, parent.height - rect.height));
+    
+    currentElement.style.left = newX + 'px';
+    currentElement.style.top = newY + 'px';
+    
+    e.preventDefault();
+  } else if (isResizing && currentElement) {
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+    
+    let newWidth = startWidth + deltaX;
+    let newHeight = startHeight + deltaY;
+    
+    newWidth = Math.max(50, newWidth);
+    newHeight = Math.max(30, newHeight);
+    
+    if (currentElement.classList.contains('canvas-design-image')) {
+      const img = currentElement;
+      const aspectRatio = img.naturalWidth / img.naturalHeight;
+      newHeight = newWidth / aspectRatio;
+    }
+    
+    currentElement.style.width = newWidth + 'px';
+    if (currentElement.classList.contains('canvas-design-text')) {
+      currentElement.style.height = newHeight + 'px';
+    }
+    
+    e.preventDefault();
+  }
+}
+
+function handleTouchEnd() {
+  if (currentElement) {
+    currentElement.style.zIndex = '10';
+  }
+  isDragging = false;
+  isResizing = false;
+  currentElement = null;
 }
 
 // =====================
@@ -47,8 +266,15 @@ function switchView(view) {
 // =====================
 function updateText() {
   const text = document.getElementById('design-text').value;
-  document.getElementById('front-text').innerText = text;
-  document.getElementById('back-text').innerText = text;
+  const frontText = document.getElementById('front-text');
+  const backText = document.getElementById('back-text');
+  
+  frontText.innerText = text;
+  backText.innerText = text;
+  
+  // Make draggable if not already
+  makeElementDraggable(frontText);
+  makeElementDraggable(backText);
 }
 
 function updateTextColor() {
@@ -62,7 +288,10 @@ function updateTextColor() {
 function updateFontSize() {
   const size = document.getElementById('font-size').value;
   ['front-text', 'back-text'].forEach(id => {
-    document.getElementById(id).style.fontSize = `${size}px`;
+    const element = document.getElementById(id);
+    element.style.fontSize = `${size}px`;
+    // Auto adjust height for text
+    element.style.height = 'auto';
   });
   document.getElementById('font-size-value').innerText = size;
 }
@@ -100,7 +329,7 @@ function updateDesignType() {
     imageControls.style.display = 'block';
 
     if (!uploadedImage) {
-      const placeholder = '<div style="color:#999;font-size:18px;">Upload an image</div>';
+      const placeholder = '<div style="color:#999;font-size:18px;pointer-events:none;">Upload an image</div>';
       frontOverlay.innerHTML = placeholder;
       backOverlay.innerHTML = placeholder;
     }
@@ -140,10 +369,19 @@ function handleImageUpload() {
     uploadedImage = e.target.result;
     const frontOverlay = document.getElementById('front-overlay');
     const backOverlay = document.getElementById('back-overlay');
-    const imgHTML = `<img src="${uploadedImage}" class="canvas-design-image" alt="Design">`;
+    const imgHTML = `<img src="${uploadedImage}" class="canvas-design-image draggable-element" id="front-image" alt="Design">`;
+    const imgHTMLBack = `<img src="${uploadedImage}" class="canvas-design-image draggable-element" id="back-image" alt="Design">`;
 
     frontOverlay.innerHTML = imgHTML;
-    backOverlay.innerHTML = imgHTML;
+    backOverlay.innerHTML = imgHTMLBack;
+    
+    // Make images draggable after they load
+    setTimeout(() => {
+      const frontImg = document.getElementById('front-image');
+      const backImg = document.getElementById('back-image');
+      if (frontImg) makeElementDraggable(frontImg);
+      if (backImg) makeElementDraggable(backImg);
+    }, 100);
   };
   reader.onerror = () => {
     Swal.fire({
@@ -181,21 +419,16 @@ function changeImageColor(hexColor) {
     canvas.height = img.height;
     ctx.drawImage(img, 0, 0);
 
-    // Get all pixel data
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
 
-    // Convert hex to RGB
     const rTarget = parseInt(hexColor.slice(1, 3), 16);
     const gTarget = parseInt(hexColor.slice(3, 5), 16);
     const bTarget = parseInt(hexColor.slice(5, 7), 16);
 
-    // Loop through pixels and blend color
     for (let i = 0; i < data.length; i += 4) {
-      // Skip transparent pixels
       if (data[i + 3] < 128) continue;
 
-      // Blend the image with selected color (weighted 50%)
       data[i] = (data[i] * 0.5 + rTarget * 0.5);
       data[i + 1] = (data[i + 1] * 0.5 + gTarget * 0.5);
       data[i + 2] = (data[i + 2] * 0.5 + bTarget * 0.5);
@@ -206,10 +439,18 @@ function changeImageColor(hexColor) {
 
     const frontOverlay = document.getElementById("front-overlay");
     const backOverlay = document.getElementById("back-overlay");
-    const imgHTML = `<img src="${newImageURL}" class="canvas-design-image" alt="Edited Image">`;
+    const imgHTML = `<img src="${newImageURL}" class="canvas-design-image draggable-element" id="front-image" alt="Edited Image">`;
+    const imgHTMLBack = `<img src="${newImageURL}" class="canvas-design-image draggable-element" id="back-image" alt="Edited Image">`;
 
     frontOverlay.innerHTML = imgHTML;
-    backOverlay.innerHTML = imgHTML;
+    backOverlay.innerHTML = imgHTMLBack;
+    
+    setTimeout(() => {
+      const frontImg = document.getElementById('front-image');
+      const backImg = document.getElementById('back-image');
+      if (frontImg) makeElementDraggable(frontImg);
+      if (backImg) makeElementDraggable(backImg);
+    }, 100);
   };
 }
 
@@ -255,7 +496,6 @@ function updateTshirtColor() {
 
   preview.innerText = color.toUpperCase();
 
-  // Store originals once
   if (!originalTshirtImageFront) originalTshirtImageFront = frontBase.src;
   if (!originalTshirtImageBack) originalTshirtImageBack = backBase.src;
 
@@ -286,11 +526,9 @@ function recolorTshirt(imgElement, originalSrc, hexColor) {
       const alpha = data[i + 3];
       if (alpha < 80) continue;
 
-      // Convert to grayscale (removes base color)
       const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
       const brightness = gray / 255;
 
-      // Apply new tint while preserving shadows/highlights
       data[i] = rTarget * brightness;
       data[i + 1] = gTarget * brightness;
       data[i + 2] = bTarget * brightness;
@@ -300,7 +538,6 @@ function recolorTshirt(imgElement, originalSrc, hexColor) {
     imgElement.src = canvas.toDataURL("image/png");
   };
 }
-
 
 // =====================
 // RESET DESIGN
@@ -397,7 +634,6 @@ function orderNow() {
         timer: 1500,
         showConfirmButton: false
       }).then(() => {
-        // Redirect to checkout if using integration
         if (typeof proceedToCheckout === 'function') {
           proceedToCheckout();
         }
@@ -410,31 +646,29 @@ function orderNow() {
 // KEYBOARD SHORTCUTS
 // =====================
 document.addEventListener('keydown', e => {
-  // Ctrl/Cmd + Z to reset
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
     e.preventDefault();
     resetDesign();
   }
 
-  // Tab to switch views
   if (e.key === 'Tab' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
     e.preventDefault();
     switchView(currentView === 'front' ? 'back' : 'front');
   }
 });
+
 // Hamburger Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-        
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-        
-        // Close menu when clicking on a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('active');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    navLinks.classList.remove('active');
+  });
+});

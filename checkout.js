@@ -6,312 +6,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let currentUser = null;
-let currentDesign = null;
-let selectedPayment = 'card';
-
-// Pricing tiers
-const PRICING = {
-    single: { min: 1, max: 4, price: 24.99 },
-    bulk: { min: 5, max: 24, price: 19.99 },
-    wholesale: { min: 25, max: Infinity, price: 14.99 }
-};
-
-// =====================
-// INITIALIZATION
-// =====================
-async function init() {
-    await checkAuth();
-    await loadDesign();
-    updatePricing();
-}
-
-// =====================
-// AUTHENTICATION CHECK
-// =====================
-async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Login Required',
-            text: 'Please login to checkout.',
-            confirmButtonText: 'Go to Login',
-            allowOutsideClick: false
-        }).then(() => {
-            window.location.href = 'auth.html';
-        });
-        return;
-    }
-    
-    currentUser = session.user;
-}
-
-// =====================
-// LOAD DESIGN
-// =====================
-async function loadDesign() {
-    const designId = localStorage.getItem('checkout_design_id');
-    
-    if (!designId) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'No Design Found',
-            text: 'Please create a design first.',
-            confirmButtonText: 'Go to Designer',
-            allowOutsideClick: false
-        }).then(() => {
-            window.location.href = 'designer.html';
-        });
-        return;
-    }
-    
-    try {
-        const { data: design, error } = await supabase
-            .from('designs')
-            .select('*')
-            .eq('id', designId)
-            .eq('user_id', currentUser.id)
-            .single();
-        
-        if (error) throw error;
-        
-        if (!design) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Design Not Found',
-                text: 'The design could not be found.',
-                confirmButtonText: 'Go to Dashboard'
-            }).then(() => {
-                window.location.href = 'dashboard.html';
-            });
-            return;
-        }
-        
-        currentDesign = design;
-        displayDesign();
-        
-    } catch (error) {
-        console.error('Error loading design:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Loading Failed',
-            text: 'Failed to load design.',
-            confirmButtonText: 'Go to Dashboard'
-        }).then(() => {
-            window.location.href = 'dashboard.html';
-        });
-    }
-}
-
-// =====================
-// DISPLAY DESIGN
-// =====================
-function displayDesign() {
-    if (!currentDesign) return;
-    
-    // Display design type
-    const designTypeDisplay = document.getElementById('design-type-display');
-    designTypeDisplay.textContent = currentDesign.design_type === 'text' ? 'Text Design' : 'Image Design';
-    
-    // Display t-shirt color
-    const colorDisplay = document.getElementById('tshirt-color-display');
-    const colorText = document.getElementById('tshirt-color-text');
-    colorDisplay.style.backgroundColor = currentDesign.tshirt_color;
-    colorText.textContent = currentDesign.tshirt_color.toUpperCase();
-    
-    // Display text content if text design
-    if (currentDesign.design_type === 'text') {
-        const textDetails = document.getElementById('text-details');
-        const textContent = document.getElementById('text-content-display');
-        textDetails.style.display = 'flex';
-        textContent.textContent = currentDesign.text_content || 'N/A';
-    }
-    
-    // Generate preview (simplified)
-    generatePreview();
-}
-
-// =====================
-// GENERATE PREVIEW
-// =====================
-function generatePreview() {
-    const previewImg = document.getElementById('preview-image');
-    
-    // Create SVG preview
-    const svg = `
-        <svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
-            <path d="M60,60 L60,30 Q60,15 75,15 L120,15 Q127.5,15 135,22.5 Q142.5,30 150,30 Q157.5,30 165,22.5 Q172.5,15 180,15 L225,15 Q240,15 240,30 L240,60 L270,90 L270,120 L255,120 L255,360 L45,360 L45,120 L30,120 L30,90 Z" 
-                  fill="${currentDesign.tshirt_color}" 
-                  stroke="#e0e0e0" 
-                  stroke-width="2"/>
-            ${currentDesign.design_type === 'text' ? `
-                <text x="150" y="180" text-anchor="middle" fill="${currentDesign.text_color}" font-size="${currentDesign.font_size}" font-weight="bold" font-family="${currentDesign.font_family}">
-                    ${currentDesign.text_content}
-                </text>
-            ` : ''}
-        </svg>
-    `;
-    
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    previewImg.src = url;
-}
-
-// =====================
-// QUANTITY & PRICING
-// =====================
-function changeQuantity(delta) {
-    const qtyInput = document.getElementById('quantity');
-    let newQty = parseInt(qtyInput.value) + delta;
-    
-    if (newQty < 1) newQty = 1;
-    
-    qtyInput.value = newQty;
-    updatePricing();
-}
-
-function updatePricing() {
-    const quantity = parseInt(document.getElementById('quantity').value) || 1;
-    
-    // Determine price tier
-    let unitPrice = PRICING.single.price;
-    if (quantity >= PRICING.wholesale.min) {
-        unitPrice = PRICING.wholesale.price;
-    } else if (quantity >= PRICING.bulk.min) {
-        unitPrice = PRICING.bulk.price;
-    }
-    
-    const subtotal = unitPrice * quantity;
-    const shipping = quantity >= 5 ? 0 : 5.00; // Free shipping for 5+ items
-    const total = subtotal + shipping;
-    
-    // Update display
-    document.getElementById('unit-price').textContent = `$${unitPrice.toFixed(2)}`;
-    document.getElementById('quantity-display').textContent = quantity;
-    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
-    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
-    document.getElementById('final-total').textContent = `$${total.toFixed(2)}`;
-}
-
-// =====================
-// PAYMENT METHOD
-// =====================
-function selectPayment(radio) {
-    selectedPayment = radio.value;
-    
-    // Update UI
-    document.querySelectorAll('.payment-method').forEach(method => {
-        method.classList.remove('selected');
-    });
-    
-    radio.closest('.payment-method').classList.add('selected');
-}
-
-// =====================
-// PLACE ORDER
-// =====================
-async function placeOrder() {
-    if (!currentUser || !currentDesign) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Cannot Place Order',
-            text: 'Please login and create a design first.'
-        });
-        return;
-    }
-    
-    const quantity = parseInt(document.getElementById('quantity').value);
-    const totalAmount = parseFloat(document.getElementById('total').textContent.replace('$', ''));
-    
-    const orderData = {
-        user_id: currentUser.id,
-        design_id: currentDesign.id,
-        quantity: quantity,
-        unit_price: parseFloat(document.getElementById('unit-price').textContent.replace('$', '')),
-        subtotal: parseFloat(document.getElementById('subtotal').textContent.replace('$', '')),
-        shipping_cost: document.getElementById('shipping').textContent === 'FREE' ? 0 : 5.00,
-        total_amount: totalAmount,
-        payment_method: selectedPayment,
-        order_status: 'pending',
-        design_snapshot: {
-            design_type: currentDesign.design_type,
-            tshirt_color: currentDesign.tshirt_color,
-            text_content: currentDesign.text_content,
-            text_color: currentDesign.text_color,
-            font_size: currentDesign.font_size,
-            font_family: currentDesign.font_family,
-            image_url: currentDesign.image_url
-        }
-    };
-    
-    try {
-        // Show loading
-        Swal.fire({
-            title: 'Processing Order...',
-            text: 'Please wait while we process your order.',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-        
-        const { data, error } = await supabase
-            .from('orders')
-            .insert([orderData])
-            .select();
-        
-        if (error) throw error;
-        
-        // Clear checkout design ID
-        localStorage.removeItem('checkout_design_id');
-        
-        // Show success message
-        await Swal.fire({
-            icon: 'success',
-            title: 'Order Placed!',
-            html: `
-                <p>Your order has been placed successfully!</p>
-                <p><strong>Order ID:</strong> #${data[0].id.substring(0, 8).toUpperCase()}</p>
-                <p><strong>Total:</strong> $${totalAmount.toFixed(2)}</p>
-                <p style="margin-top: 15px; color: #666;">You will receive a confirmation email shortly.</p>
-            `,
-            confirmButtonText: 'View My Orders',
-            confirmButtonColor: '#045490'
-        });
-        
-        // Redirect to dashboard orders tab
-        window.location.href = 'dashboard.html?tab=orders';
-        
-    } catch (error) {
-        console.error('Error placing order:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Order Failed',
-            text: 'Failed to place order. Please try again or contact support.',
-            confirmButtonText: 'OK'
-        });
-    }
-}
-
-// =====================
-// INITIALIZE ON LOAD
-// =====================
-init();// =====================
-// SUPABASE CONFIGURATION
-// =====================
-const SUPABASE_URL = 'https://yxnrmerxfxnffjvmyoqn.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4bnJtZXJ4ZnhuZmZqdm15b3FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5OTE1MDIsImV4cCI6MjA3ODU2NzUwMn0.OtUz7bDP0T6XzCcWPTig0Ivc-cS1F8HMIvPoLVXYsXo';
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// EmailJS Configuration (Sign up at https://www.emailjs.com/)
+const EMAILJS_PUBLIC_KEY = 'Jf-fhARFsoaMw-JWR'; // Replace with your EmailJS public key
+const EMAILJS_SERVICE_ID = 'service_wsl9hze'; // Replace with your service ID
+const EMAILJS_TEMPLATE_ID = 'template_tx405xw'; // Replace with your template ID
 
 let currentUser = null;
 let currentDesign = null;
 let selectedPayment = 'card';
-let printSide = 'front'; // 'front' or 'both'
+let printSide = 'front';
 let rushFee = false;
 
 // Pricing tiers (Philippine Peso)
@@ -328,16 +31,30 @@ const PRICING = {
     }
 };
 
+// Shipping rates based on quantity
+const SHIPPING = {
+    pickup: 0,
+    retail: 80,    // 1-4 shirts
+    bulk: 150,     // 5-25 shirts
+    wholesale: 250 // 26+ shirts
+};
+
 // Add-ons
 const ADD_ONS = {
-    rush: 50, // per shirt
-    packaging: 30, // per shirt
-    tags: 25 // per shirt
+    rush: 50 // per shirt
 };
 
 // =====================
 // INITIALIZATION
 // =====================
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize EmailJS
+    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+    init();
+});
+
 async function init() {
     await checkAuth();
     await loadDesign();
@@ -429,17 +146,14 @@ async function loadDesign() {
 function displayDesign() {
     if (!currentDesign) return;
     
-    // Display design type
     const designTypeDisplay = document.getElementById('design-type-display');
     designTypeDisplay.textContent = currentDesign.design_type === 'text' ? 'Text Design' : 'Image Design';
     
-    // Display t-shirt color
     const colorDisplay = document.getElementById('tshirt-color-display');
     const colorText = document.getElementById('tshirt-color-text');
     colorDisplay.style.backgroundColor = currentDesign.tshirt_color;
     colorText.textContent = currentDesign.tshirt_color.toUpperCase();
     
-    // Display text content if text design
     if (currentDesign.design_type === 'text') {
         const textDetails = document.getElementById('text-details');
         const textContent = document.getElementById('text-content-display');
@@ -447,7 +161,6 @@ function displayDesign() {
         textContent.textContent = currentDesign.text_content || 'N/A';
     }
     
-    // Generate preview
     generatePreview();
 }
 
@@ -457,7 +170,9 @@ function displayDesign() {
 function generatePreview() {
     const previewImg = document.getElementById('preview-image');
     
-    // Create SVG preview
+    const textContent = currentDesign.text_content || 'Your Design';
+    const fontSize = currentDesign.font_size || 32;
+    
     const svg = `
         <svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
             <path d="M60,60 L60,30 Q60,15 75,15 L120,15 Q127.5,15 135,22.5 Q142.5,30 150,30 Q157.5,30 165,22.5 Q172.5,15 180,15 L225,15 Q240,15 240,30 L240,60 L270,90 L270,120 L255,120 L255,360 L45,360 L45,120 L30,120 L30,90 Z" 
@@ -465,9 +180,11 @@ function generatePreview() {
                   stroke="#e0e0e0" 
                   stroke-width="2"/>
             ${currentDesign.design_type === 'text' ? `
-                <text x="150" y="180" text-anchor="middle" fill="${currentDesign.text_color}" font-size="${currentDesign.font_size}" font-weight="bold" font-family="${currentDesign.font_family}">
-                    ${currentDesign.text_content}
+                <text x="150" y="180" text-anchor="middle" fill="${currentDesign.text_color}" font-size="${fontSize}" font-weight="bold" font-family="${currentDesign.font_family || 'Arial'}">
+                    ${textContent}
                 </text>
+            ` : currentDesign.image_url ? `
+                <image x="100" y="130" width="100" height="100" href="${currentDesign.image_url}" preserveAspectRatio="xMidYMid meet"/>
             ` : ''}
         </svg>
     `;
@@ -484,7 +201,6 @@ function selectPrintSide(side) {
     printSide = side;
     updatePricing();
     
-    // Update UI
     document.querySelectorAll('.print-side-option').forEach(option => {
         option.classList.remove('selected');
     });
@@ -508,7 +224,6 @@ function changeQuantity(delta) {
 function updatePricing() {
     const quantity = parseInt(document.getElementById('quantity').value) || 1;
     
-    // Determine price tier based on quantity and print side
     const pricing = PRICING[printSide];
     let unitPrice = pricing.single.price;
     let discountRate = 0;
@@ -522,25 +237,25 @@ function updatePricing() {
     }
     
     const subtotal = unitPrice * quantity;
-    
-    // Rush fee
     const rushCost = rushFee ? (ADD_ONS.rush * quantity) : 0;
     
-    // Shipping (free for 5+ items)
-    const shipping = quantity >= 5 ? 0 : 100;
+    let shipping = SHIPPING.retail;
+    if (quantity >= 26) {
+        shipping = SHIPPING.wholesale;
+    } else if (quantity >= 5) {
+        shipping = SHIPPING.bulk;
+    }
     
     const total = subtotal + rushCost + shipping;
     
-    // Update display
     document.getElementById('unit-price').textContent = `₱${unitPrice.toFixed(2)}`;
     document.getElementById('quantity-display').textContent = quantity;
     document.getElementById('subtotal').textContent = `₱${subtotal.toFixed(2)}`;
     document.getElementById('rush-fee-display').textContent = rushFee ? `₱${rushCost.toFixed(2)}` : '-';
-    document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `₱${shipping.toFixed(2)}`;
+    document.getElementById('shipping').textContent = `₱${shipping.toFixed(2)}`;
     document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
     document.getElementById('final-total').textContent = `₱${total.toFixed(2)}`;
     
-    // Show discount badge if applicable
     const discountBadge = document.getElementById('discount-badge');
     if (discountRate > 0) {
         discountBadge.textContent = `${discountRate}% Discount Applied!`;
@@ -564,12 +279,64 @@ function toggleRushFee(checkbox) {
 function selectPayment(radio) {
     selectedPayment = radio.value;
     
-    // Update UI
     document.querySelectorAll('.payment-method').forEach(method => {
         method.classList.remove('selected');
     });
     
     radio.closest('.payment-method').classList.add('selected');
+}
+
+// =====================
+// SEND EMAIL RECEIPT
+// =====================
+async function sendEmailReceipt(orderData, orderId) {
+    try {
+        // Check if EmailJS is configured
+        if (typeof emailjs === 'undefined' || EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
+            console.warn('EmailJS not configured. Skipping email send.');
+            return;
+        }
+
+        const templateParams = {
+            to_email: currentUser.email,
+            to_name: currentUser.email.split('@')[0],
+            order_id: orderId,
+            order_date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            design_type: orderData.design_snapshot.design_type === 'text' ? 'Text Design' : 'Image Design',
+            tshirt_color: orderData.design_snapshot.tshirt_color.toUpperCase(),
+            text_content: orderData.design_snapshot.text_content || 'N/A',
+            print_type: orderData.print_side === 'front' ? 'Front Only' : 'Front & Back',
+            unit_price: `₱${orderData.unit_price.toFixed(2)}`,
+            quantity: orderData.quantity,
+            subtotal: `₱${orderData.subtotal.toFixed(2)}`,
+            rush_fee: orderData.rush_fee ? `₱${orderData.rush_fee_cost.toFixed(2)}` : '-',
+            shipping: `₱${orderData.shipping_cost.toFixed(2)}`,
+            total: `₱${orderData.total_amount.toFixed(2)}`,
+            payment_method: getPaymentMethodName(orderData.payment_method),
+            rush_processing: orderData.rush_fee ? 'Yes (2-3 days)' : 'No',
+            expected_delivery: orderData.rush_fee ? '5-7 business days' : '10-14 business days'
+        };
+
+        await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams
+        );
+
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}
+
+function getPaymentMethodName(method) {
+    const methods = {
+        'card': 'Credit/Debit Card',
+        'paypal': 'PayPal',
+        'gcash': 'GCash',
+        'cod': 'Cash on Delivery'
+    };
+    return methods[method] || method;
 }
 
 // =====================
@@ -589,7 +356,7 @@ async function placeOrder() {
     const unitPrice = parseFloat(document.getElementById('unit-price').textContent.replace('₱', ''));
     const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace('₱', ''));
     const rushCost = rushFee ? (ADD_ONS.rush * quantity) : 0;
-    const shippingCost = document.getElementById('shipping').textContent === 'FREE' ? 0 : 100;
+    const shippingCost = parseFloat(document.getElementById('shipping').textContent.replace('₱', ''));
     const totalAmount = parseFloat(document.getElementById('total').textContent.replace('₱', ''));
     
     const orderData = {
@@ -618,7 +385,6 @@ async function placeOrder() {
     };
     
     try {
-        // Show loading
         Swal.fire({
             title: 'Processing Order...',
             text: 'Please wait while we process your order.',
@@ -636,27 +402,39 @@ async function placeOrder() {
         
         if (error) throw error;
         
-        // Clear checkout design ID
+        const orderId = data[0].id.substring(0, 8).toUpperCase();
+        
+        // Send email receipt
+        await sendEmailReceipt(orderData, orderId);
+        
         localStorage.removeItem('checkout_design_id');
         
-        // Show success message
         await Swal.fire({
             icon: 'success',
-            title: 'Order Placed!',
+            title: 'Order Placed Successfully!',
             html: `
-                <p>Your order has been placed successfully!</p>
-                <p><strong>Order ID:</strong> #${data[0].id.substring(0, 8).toUpperCase()}</p>
-                <p><strong>Print Type:</strong> ${printSide === 'front' ? 'Front Only' : 'Front & Back'}</p>
-                <p><strong>Quantity:</strong> ${quantity} ${quantity > 1 ? 'shirts' : 'shirt'}</p>
-                <p><strong>Total:</strong> ₱${totalAmount.toFixed(2)}</p>
-                ${rushFee ? '<p><strong>Rush Processing:</strong> Yes (2-3 days)</p>' : ''}
-                <p style="margin-top: 15px; color: #666;">You will receive a confirmation email shortly.</p>
+                <div style="text-align: left; padding: 20px;">
+                    <p style="font-size: 16px; margin-bottom: 20px;">Your order has been placed successfully!</p>
+                    
+                    <div style="background: #f8f9ff; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="margin: 5px 0;"><strong>Order ID:</strong> #${orderId}</p>
+                        <p style="margin: 5px 0;"><strong>Print Type:</strong> ${printSide === 'front' ? 'Front Only' : 'Front & Back'}</p>
+                        <p style="margin: 5px 0;"><strong>Quantity:</strong> ${quantity} ${quantity > 1 ? 'shirts' : 'shirt'}</p>
+                        <p style="margin: 5px 0;"><strong>Total:</strong> ₱${totalAmount.toFixed(2)}</p>
+                        ${rushFee ? '<p style="margin: 5px 0;"><strong>Rush Processing:</strong> Yes (2-3 days)</p>' : ''}
+                    </div>
+                    
+                    <div style="background: #d1ecf1; padding: 15px; border-radius: 10px; border: 2px solid #0c5460;">
+                        <p style="margin: 0; color: #0c5460;"><strong>📧 Receipt Sent!</strong></p>
+                        <p style="margin: 10px 0 0 0; color: #0c5460; font-size: 14px;">A detailed receipt has been sent to <strong>${currentUser.email}</strong></p>
+                    </div>
+                </div>
             `,
             confirmButtonText: 'View My Orders',
-            confirmButtonColor: '#045490'
+            confirmButtonColor: '#045490',
+            width: '600px'
         });
         
-        // Redirect to dashboard orders tab
         window.location.href = 'dashboard.html?tab=orders';
         
     } catch (error) {
