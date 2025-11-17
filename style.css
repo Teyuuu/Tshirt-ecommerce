@@ -1070,7 +1070,7 @@ input[type="range"]::-moz-range-thumb:hover {
 .gallery-scroll-track {
     display: flex;
     gap: 30px; /* spacing between images */
-    animation: scroll-left 40s linear infinite;
+    animation: scroll-left 10s linear infinite;
 }
 
 .gallery-scroll-wrapper:hover .gallery-scroll-track {
