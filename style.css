@@ -1157,9 +1157,10 @@ input[type="range"]::-moz-range-thumb:hover {
 
 .hero-video {
     width: 100%;
-    height: auto;
     display: block;
     object-fit: cover;
+    height: 85vh; 
+    overflow: hidden;
 }
 
 .video-overlay {
