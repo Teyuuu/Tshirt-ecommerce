@@ -51,16 +51,19 @@
     margin-bottom: 10px;
 }
 
-.team-card a {
-    color: #045490;
-    text-decoration: none;
+.team-card .email-btn {
+    background-color: #045490;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
     font-weight: 600;
-    transition: color 0.3s;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-.team-card a:hover {
-    color: #0675c9;
-    text-decoration: underline;
+.team-card .email-btn:hover {
+    background-color: #0675c9;
 }
 
 /* Contact Form */
